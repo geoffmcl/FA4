@@ -1,0 +1,12 @@
+
+# make dftables, then pcre_chartables.c ...
+
+all:	dftables.exe pcre_chartables.c	
+
+dftables.exe:	dftables.c makefile.dft
+	cl -DSUPPORT_UTF8 -DSUPPORT_UCP -D_CRT_SECURE_NO_DEPRECATE dftables.c
+
+pcre_chartables.c: dftables.exe
+	dftables.exe pcre_chartables.c
+ 
+# eof

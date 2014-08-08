@@ -1,0 +1,137 @@
+Running list of 'fixes' --- started 16 November, 2005
+
+FIX20120408 - Do NOT set g_bGotLOpt on -LL option - no change in version since not yet published
+
+20120407 - Moved to WIN7-PC - Put libs\pcre and utils code all into here so NO external dependencies
+Fixed up the DSW/DSP build files before using MSVC10 to compile - all looks good
+FIX20120407 - Added -S to strip non-alphanumeric char from output of finds
+Also bump default -LL (line limit) from 80 to 96
+Added -NS to NOT show stats at end and -NF to NOT show the file name
+
+20080802: Suggestion: Do NOT output REPEATED same differences, unless requested,
+and/or have a switch to 'ignore' a certain difference
+Thus avoiding repeated simple differences like -
+-----------------------------------------------
+----------tempnew.txt
+CODE: } while(0);                                                                          [2:1]
+
+CODE: do {                                                                                 [2]
+
+----------tempnew3.txt
+CODE: } while(0) ;                                                                         [2:1]
+
+CODE: do {                                                                                 [2]
+
+-----------------------------------------------
+----------tempnew.txt
+CODE: } while(0);                                                                          [2:1]
+
+CODE: do {                                                                                 [2]
+
+----------tempnew3.txt
+CODE: } while(0) ;                                                                         [2:1]
+
+CODE: do {                                                                                 [2]
+
+Maybe, when the difference changes, output a COUNT of how many same-difference were NOT output
+
+
+// FIX20071006 - add -x:; to excluded CVS and SVN directories
+// and increased max default wrap to 90, in normally 99 char wide console
+
+// FIX20070923 - avoid adding FIRST comma in Fa4Util.c
+// return nice number - with comas
+// (PTSTR My_NiceNumber( PTSTR lpn )
+
+// FIX20070914 - set g_bIsBinary2 for ALL files - SLOWER!!!!
+Then use a BINARY set of output of find, rather than the TEXT
+whcih searches for END OF LINE, which can mean a BIG output for a simple
+find ...
+
+// FIX20060621
+Add an -F:2, indicating ALL FINDS in one LINE of the file
+#define ADD_F2_ALL1LINE // FIX20060621
+
+// FIX20060605
+Added following code to GrmLib.c, WindComp2() service
+   } else {
+      // FIX20060605 
+      // one or the other is BLANK
+      // this is a MATCH if one is an ASTERIX or ".*"!!!
+      if( i1 == 0 ) {
+         if(( i2 == 1 ) && ( *lp2 == '*' )) {
+            flg = TRUE;
+         } else if(( i2 == 2 ) && (lp2[0] == '.') && (lp2[1] == '*')) {
+            flg = TRUE;
+         }
+      } else if( i2 == 0 ) {
+         if(( i1 == 1 ) && ( *lp1 == '*' )) {
+            flg = TRUE;
+         } else if(( i1 == 2 ) && ( lp1[0] == '.' ) && ( lp1[1] == '*' )) {
+            flg = TRUE;
+         }
+      }
+   }
+which should accept MORE files ... ;=))
+
+
+// FIX20060426 - Compiled with MSVC7 - some *.c* or *.h* matching BUG
+like "FG_NDEBUG" c:\FG0910-1\Simgear\source\simgear\*.c* c:\FG0910-1\Simgear\source\simgear\*.h*
+Finally REMOVED the double zero terminated FILE LIST BUFFER ... Now
+processes the input files off the LIST STRUCTURE ... could be optimised, in that
+the above example will cause the same folders to be searched TWICE ...
+
+// FIX20060311 - fix -do to produce SORTED list
+#define  PVERS    "V4.0.37"  // // FIX20060311 - fix -do[d|s]
+#define  PDATE    "2006 March 11" // also ordered list if VERB4 
+
+FIX20060126 - An input of say cmptidy* should be the same as cmptidy*.*,
+but perhaps NOT cmptidy*. != cmptidy*.* - 
+Also a small fix for output file time ranking done in Pgm_Exit()
+
+FIX20051127 - Presently have -xfilename1;fn2 list of exclusions, but
+sometimes when using -r, it would be good to exclude directories also.
+So add -x:directory or dir1;dir2;... list to exclude directories ...
+AND, especially for folder managed by FRONTPAGE, it might be good
+to exclude 'hidden' directories, unless otherwise instructed.
+Seems -
+ if -x@filename, input file will be loaded into an allocated buffer,
+ allocated in a Load File structure, LFSTR ... but can NOT find the
+ further reference to this buffer??? That makes SOME sense, since the
+ '@' is NEVER seen ...
+ if -xfile1;file2 list of files will be stored in a 00 terminated
+ buffer, gszExclude - the service InExclude(...) checks if the file
+ to be searched is in this list ...
+OK, the first step seem to be to FIX this, and use a linked list
+of EXCLUDED file, under switch USE_EXCLUDE_LIST
+NOTE: The -x@inpfile is ONLY fixed under this SWITCH, USE_EXCLUDE_LIST
+
+Hmmm, this now appears to be WORKING, now what about directories?
+Maybe -X:directory - exclude this directory
+
+LOOKING GOOD!!!
+
+End FIX20051127
+
+// FIX20060315 - minor fix to KindofCompare
+
+It appears FIX20050304 was NOT completed ...
+
+A variable g_bDoALLin1 was added to hold the -F:1 input, and when
+this is set, there is a call to -
+void holdlineio(void) { g_ioHold = 1; }
+BUT this variable is NEVER referenced!!!
+
+The simple case should be, when g_ioHold is set, ALL output,
+at least from the 'finder' should be stacked, until BOTH/ALL finds
+have been found ... the finds are iterated for each mapped file,
+so when a file is COMPLETED, the decision should be made to OUTPUT
+the results, if the -f:1 - all found in one file, or even an
+-f:2 all find MUST be in the SAME line of the file
+
+It SEEMS simple - when g_bDoAllin1 is SET, AND the find count > 1,
+and g_ioHold is SET, it should ONLY be added to an OUT LIST ...
+
+Ok, have created a new module, Fa4Out.]c|h], where the output is
+put on a LIST, and only at the end of the processing of a particular
+file, the decision to OUTPUT the finds is done ...
