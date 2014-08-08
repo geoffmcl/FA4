@@ -1,6 +1,6 @@
 
 // fa4Find.c
-#include "fa4.h"
+#include "Fa4.h"
 #undef  EXTRA_DEBUG
 
 extern uint32_t g_dwFinds, dwFind1, g_dwItems, dwLnBgn, dwLastLn, g_dwTotFinds;
@@ -214,7 +214,7 @@ void	DoLineChk( WS, char * lpb, uint32_t dwLnBgn, uint32_t dwi )
 		( dwi > dwLnBgn ) )
 	{
 		uint32_t	iLen = (dwi - dwLnBgn); // get length of line
-      PSTR	lpd  = &lpb[dwLnBgn]; // pointer to beginning
+      char *	lpd  = &lpb[dwLnBgn]; // pointer to beginning
       //extern int iLen_ok( int i );
       if( iLen_ok( iLen ) ) {
 		//if(( iLen > (sizeof(szEDirect)-1) ) ||

@@ -157,7 +157,7 @@ int	FullComp( WS,
                 if( g_fWhole2 )   // FIX20010413 - add -w2 to force SPACE delimited
                     suc = (int)ISSPACEY( c );
                 else
-                    suc = (int)NotAsciiRng( (CHAR)c );
+                    suc = (int)NotAsciiRng( (char)c );
             }
 			if( suc ) {
                 if( (dwoff + i) < dwmax ) {
@@ -167,7 +167,7 @@ int	FullComp( WS,
                     if( g_fWhole2 )   // FIX20010413 - add -w2 to force SPACE delimited
                         suc = (int)ISSPACEY( c );
                     else
-                        suc = (int)NotAsciiRng( (CHAR)c );
+                        suc = (int)NotAsciiRng( (char)c );
                 }
             }
 		}

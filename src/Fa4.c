@@ -3302,7 +3302,7 @@ uint32_t ChkMake2( WS, char * lpv, uint32_t dwk, uint32_t dwo )
                   dwo = dwm;
                dwo -= (dwl - 1);    // reduce by lenght of search strin
                // actually could reduce more since MUST find "=1" after it
-               c = toupper(*lpm);   // get first CHAR
+               c = toupper(*lpm);   // get first char
                d2 = 0;
                for( dwi = 0; dwi < dwo; dwi++ )
                {
@@ -3445,7 +3445,7 @@ int KindofCompare( char * lpex, char * lpfn )
 			   d = toupper(lpfn[jj]);
 			   if( ( c == d ) ||
 				   ( c == '?' ) ) {
-				   // JUST GO TO NEXT CHAR IN EACH
+				   // JUST GO TO NEXT char IN EACH
 				   ii++;
 				   jj++;
 				   i--;
@@ -4712,6 +4712,7 @@ void prt_out_tail( void )
 {
    char buf[256];
    char * bp = buf;
+#ifdef _MSC_VER
    char * env = getenv("USERNAME");
    sprintf(bp, sz_Tail, _MSC_VER);
 
@@ -4722,6 +4723,17 @@ void prt_out_tail( void )
    if(env) {
       sprintf(EndBuf(bp), ", on %s machine.", env);
    }
+#else
+   char * env = getenv("USER");
+   if (!env)
+	env = getenv("LOGNAME");
+   sprintf(bp,"Compiled by %s", (env ? env : "<unknown>"));
+   env = getenv("SESSION");
+   if (!env)
+	env = getenv("DESKTOP_SESSION");
+   if (env)
+	sprintf(EndBuf(bp),", in %s", env );
+#endif
    strcat(bp,PRTTERM);
    prt(bp);
 }
@@ -5072,6 +5084,7 @@ void	UnmapFile1( WS )
 
 void	UnmapFile2( WS )
 {
+#ifdef _MSC_VER
 	if( lpMap2 )
 		UnmapViewOfFile( lpMap2 );	// address where mapped view begins
 	lpMap2 = 0;
@@ -5081,6 +5094,9 @@ void	UnmapFile2( WS )
 	if( VH(hTmpFil2) )
 		CloseAFile( hTmpFil2 );
 	hTmpFil2 = 0;
+#else
+	// TODO: functions for mmpa close
+#endif
 }
 void	SetIretVal( WS )
 {

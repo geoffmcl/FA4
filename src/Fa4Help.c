@@ -1772,7 +1772,7 @@ void  Do_X_Switch( WS, char * cp )
 {
    char * lpb;
    uint32_t dwi, dwj, dwk;
-   CHAR  c;
+   char  c;
 #ifdef USE_EXCLUDE_LIST
    if( *cp ==':' ) { // we have -X:directory
 		cp++; // move up to first directory
