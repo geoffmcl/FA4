@@ -11,7 +11,9 @@ option( BUILD_SHARED_LIB "Set ON to build and use shared library"         OFF )
 option( USE_DT4_MODULE   "Set ON to add DT4 modules to library"           OFF )
 
 # to distinguish between debug and release lib
-set( CMAKE_DEBUG_POSTFIX d )
+if (MSVC)
+	set( CMAKE_DEBUG_POSTFIX d )
+endif ()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     set( WARNING_FLAGS -Wall )
@@ -35,6 +37,7 @@ if(WIN32 AND MSVC)
 else()
     #   what to add for gcc? Maybe
     set(WARNING_FLAGS "${WARNING_FLAGS} -Wno-unused-but-set-variable")
+    list(APPEND add_LIBS m)
 endif()
 
 set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNING_FLAGS} ${MSVC_FLAGS} -D_REENTRANT" )
