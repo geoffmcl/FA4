@@ -1,6 +1,6 @@
 
 // Fa4Show.c
-#include "fa4.h"
+#include "Fa4.h"
 #undef  EXTRA_DEBUG2
 
 // FIX20120407 - add -S - output ONLY alpha-numeric character if (gfStrip) 
@@ -37,7 +37,7 @@ void holdlineio(void)
 }
 
 
-void Show_bin_Line( WS, uint32_t dwoff, PSTR lpmf, uint32_t dwmax, uint32_t *pln )
+void Show_bin_Line( WS, uint32_t dwoff, char *lpmf, uint32_t dwmax, uint32_t *pln )
 {
    uint32_t dwo = dwoff;
    uint32_t dwtmax = gdwMax1Line;

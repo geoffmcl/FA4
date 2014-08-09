@@ -104,7 +104,7 @@ char *   Mid( char * lpl, uint32_t dwb, uint32_t dwl )
       ( dwl <= (dwk - (dwb - 1)) ) )
    {
       dwr = 0;
-      for(dwi = (dwb - 1); (dwi < dwk), (dwr < dwl); dwi++ )
+      for(dwi = (dwb - 1); ((dwi < dwk)&&(dwr < dwl)); dwi++ )
       {
 //         pt = &lpl[dwi];
          lps[dwr++] = lpl[dwi];
