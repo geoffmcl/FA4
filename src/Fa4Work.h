@@ -39,11 +39,11 @@
 #define UNICODE_BOM_LE   0xFFFE   /* little-endian UNICODE BOM */
 #define UNICODE_BOM_UTF8 0xEFBBBF /* UTF-8 UNICODE BOM */
 
+#define MY_MAX_FILESIZE 2000000000
 typedef struct tagGFS {
 	char	        fs_szNm[(MAX_PATH+MXOVR)];
 	HANDLE	        fs_hHnd;
-	uint32_t	    fs_dwLow;
-	uint32_t	    fs_dwHigh;
+	uint64_t	    fs_uint64;
 	void *  	    fs_lpV;
 	uint32_t	    fs_dwRd;
 }GFS, * LPGFS;

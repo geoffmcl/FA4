@@ -423,7 +423,7 @@ int	OpenReadFile( char * lpf, HANDLE * ph )
 	int		flg;
 
 	flg = FALSE;		// SET FAILED!!!
-	if( lpf && *lpf )
+	if( lpf && *lpf && (is_file_or_directory64(lpf) == VALID_FILE))
 	{
 #ifdef	WIN32
 		HANDLE	hdl;

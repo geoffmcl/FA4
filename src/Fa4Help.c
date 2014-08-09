@@ -173,11 +173,17 @@ void	Usage( WS, uint32_t Err )
 	Pgm_Exit( pWS );
 }
 
+#ifdef _MSC_VER
+#define M_IS_DIR _S_IFDIR
+#else
+#define M_IS_DIR S_IFDIR
+#endif
+
 int is_file_or_directory(char * ps)
 {
     struct stat buf;
     if (stat(ps,&buf) == 0) {
-        if (buf.st_mode & _S_IFDIR)
+        if (buf.st_mode & M_IS_DIR)
             return 2;
         else
             return 1;
@@ -665,15 +671,14 @@ int  Add2Finds( WS, char * lps, int bFSwitch )
    return bRet;
 }
 
-int	GetFSize( LPGFS lpgfs )
+static int	priv_GetFSize( LPGFS lpgfs )
 {
 	int	flg = FALSE;
 	if( ( lpgfs ) &&
 		( VH(lpgfs->fs_hHnd) ) )
 	{
-		lpgfs->fs_dwLow = GetFileSize( lpgfs->fs_hHnd, &lpgfs->fs_dwHigh );
-		if( ( lpgfs->fs_dwLow ) ||
-			( lpgfs->fs_dwHigh ) )
+        lpgfs->fs_uint64 = get_last_file_size64();
+        if (lpgfs->fs_uint64 > 0)
 		{
 			flg = TRUE;
 		}
@@ -688,7 +693,7 @@ int	Open4Read( LPGFS lpgfs )
 	if( ( lpgfs ) &&
 		( OpenReadFile( &lpgfs->fs_szNm[0], &lpgfs->fs_hHnd ) ) &&
 		( VH( lpgfs->fs_hHnd ) ) &&
-		( GetFSize( lpgfs ) ) )
+		( priv_GetFSize( lpgfs ) ) )
 	{
 		flg = TRUE;
 	}
@@ -724,7 +729,11 @@ int	CloseARead( LPGFS lpgfs )
 	{
 		if( VH( lpgfs->fs_hHnd ) )
 		{
+#ifdef _MSC_VER
 			CloseHandle( lpgfs->fs_hHnd );
+#else
+            fclose( lpgfs->fs_hHnd );
+#endif
 			flg = TRUE;
 		}
 		lpgfs->fs_hHnd = 0;
@@ -732,7 +741,18 @@ int	CloseARead( LPGFS lpgfs )
 	return flg;
 }
 
-
+#ifndef _MSC_VER
+int ReadFile( HANDLE hFile, void *pBuf, uint32_t len, uint32_t *pread )
+{
+    int iret = 0;
+    uint32_t red = fread( pBuf, 1, len, hFile );
+    if (red == len) {
+        *pread = red;
+        iret = 1;
+    }
+    return iret;
+}
+#endif
 //				case 'I':
 //#define		fInhibit	W.ws_fInhibit
 //#define		giInhibCnt	W.ws_iInhibCnt
@@ -742,7 +762,7 @@ int	GetIFile( WS, char * psw )
 {
 	int	flg = FALSE;
 	char *	cp;
-
+    uint32_t size;
 	cp = psw; 
 	if(cp)
 	{
@@ -750,28 +770,28 @@ int	GetIFile( WS, char * psw )
 		strcpy( &lpgfs->fs_szNm[0], cp );
 		if( Open4Read( lpgfs ) )
 		{
-			if( lpgfs->fs_dwHigh )
+            size = (uint32_t) lpgfs->fs_uint64;
+			if( lpgfs->fs_uint64 > MY_MAX_FILESIZE )
 			{
 				CloseARead( lpgfs );
 				strcat( glpError, "ERROR: File TOO large!"PRTTERM );
 			}
-			else if( ( lpgfs->fs_lpV = MALLOC( LPTR,
-				( lpgfs->fs_dwLow + 16 ) ) ) != 0 )
+			else if( ( lpgfs->fs_lpV = MALLOC( LPTR, ( size + 16 ) ) ) != 0 )
 			{
 				lpgfs->fs_dwRd = 0;
 				if( ( ReadFile( lpgfs->fs_hHnd,
 								lpgfs->fs_lpV,
-								lpgfs->fs_dwLow,
+								size,
 								&lpgfs->fs_dwRd,
 								NULL ) ) &&
-					( lpgfs->fs_dwRd == lpgfs->fs_dwLow ) )
+					( lpgfs->fs_dwRd == size ) )
 				{
 					char *	lpb;
 					uint32_t	dwi;
 					char	c;
 
 					lpb = lpgfs->fs_lpV;
-					for( dwi = 0; dwi < lpgfs->fs_dwLow; dwi++ )
+					for( dwi = 0; dwi < size; dwi++ )
 					{
 						c = lpb[dwi];	// get char
 					}
@@ -1094,12 +1114,13 @@ void	DoReadBuf( LPWORKSTR pWS, uint32_t level, LPGFS	lpgfs )
 	char	   c, cc, dd;
 	char * *  lpa;
 	int		ic;
+    uint32_t size = (uint32_t)lpgfs->fs_uint64;
 
 	lpb = lpgfs->fs_lpV;
-	lpa = (char * *)&lpb[lpgfs->fs_dwLow];  // get AFTER file read size
+	lpa = (char * *)&lpb[size];  // get AFTER file read size
 	ic = 0;
 	lpa[ic++] = "FA4";   // add first dummy argument = 1 of MXARGS
-	for( dwi = 0; dwi < lpgfs->fs_dwLow; dwi++ )
+	for( dwi = 0; dwi < size; dwi++ )
 	{
 		c = lpb[dwi];	// get char
 		if( c > ' ' )
@@ -1108,7 +1129,7 @@ void	DoReadBuf( LPWORKSTR pWS, uint32_t level, LPGFS	lpgfs )
 			{
 				// skip commented lines
 				dwi++;	// to next
-				for( ; dwi < lpgfs->fs_dwLow; dwi++ )
+				for( ; dwi < size; dwi++ )
 				{
                c = lpb[dwi];  // NOTE: Also skip TABS
 					if( ( c < ' ' ) && ( c != '\t' ) )
@@ -1127,7 +1148,7 @@ void	DoReadBuf( LPWORKSTR pWS, uint32_t level, LPGFS	lpgfs )
             else
                dd = 0;	// begin NOT in quotes
 				dwi++;      // bump PAST first char
-				for( ; dwi < lpgfs->fs_dwLow; dwi++ )
+				for( ; dwi < size; dwi++ )
 				{
 //					if( lpb[dwi] <= ' ' )
 //					if( lpb[dwi] < ' ' )
@@ -1170,7 +1191,7 @@ void	DoReadBuf( LPWORKSTR pWS, uint32_t level, LPGFS	lpgfs )
 
 								// and throw away the COMMENT section
 								dwi++;	// to next
-								for( ; dwi < lpgfs->fs_dwLow; dwi++ )
+								for( ; dwi < size; dwi++ )
 								{
 									cc = lpb[dwi];
 									if( ( cc < ' '  ) &&
@@ -1238,21 +1259,22 @@ void  DoAnINP( WS, char * cp, int level )
    strcpy( &lpgfs->fs_szNm[0], cp );
    if( Open4Read( lpgfs ) )
    {
-	   if( lpgfs->fs_dwHigh )
+       uint32_t size = (uint32_t)lpgfs->fs_uint64;
+	   if( lpgfs->fs_uint64 > MY_MAX_FILESIZE)
 	   {
 		   CloseARead( lpgfs );
 		   strcat( glpError, "ERROR: File TOO large!"PRTTERM );
 	   }
 	   else if( ( lpgfs->fs_lpV = MALLOC( LPTR,
-		   ( lpgfs->fs_dwLow + (MXARGS * sizeof(char *)) ) ) ) != 0 )
+		   ( size + (MXARGS * sizeof(char *)) ) ) ) != 0 )
 	   {
 		   lpgfs->fs_dwRd = 0;
 		   if( ( ReadFile( lpgfs->fs_hHnd,
 					   lpgfs->fs_lpV,
-					   lpgfs->fs_dwLow,
+					   size,
 					   &lpgfs->fs_dwRd,
 					   NULL ) ) &&
-			   ( lpgfs->fs_dwRd == lpgfs->fs_dwLow ) )
+			   ( lpgfs->fs_dwRd == size ) )
 		   {
    //#ifdef	USERDBUF
 			   DoReadBuf( pWS, level, lpgfs );
