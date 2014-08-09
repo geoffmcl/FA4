@@ -52,8 +52,8 @@ void	oi( char * lps )
 {
 	int		i;
 	uint32_t	dw;
-#ifdef WIN32
 #ifndef	FC4W
+#ifdef WIN32
 	if( fOnce )
 	{
 		hOut    = GetStdHandle( STD_OUTPUT_HANDLE );
@@ -67,8 +67,16 @@ void	oi( char * lps )
       }
 		fOnce = FALSE;
 	}
+#else // !WIN32
+	if ( fOnce )
+	{
+		hOut = stdout;
+		hErrOut = stderr;
+		fOnce = 0;
+		// printf("Set hOut=%p, and hErrOut=%p\n", hOut, hErrOut );
+	}
+#endif // WIN32 y/n
 #endif	/* !FC4W */
-#endif // WIN32
 
    i = 0;
 	if( lps )

@@ -1812,8 +1812,11 @@ void  MakeDiagFile( void )
       }
    }
 #endif   // !NDEBUG
-   strcat(lpf,"TEMPFA4.TXT");
-	//SetDiagFile( "TEMPFA4.TXT" );
+#ifdef WIN32
+   strcat(lpf,"tempfa4.txt");
+#else
+    strcpy(lpf,"/tmp/tempfa4.log");
+#endif
 	SetDiagFile(lpf);
 }
 

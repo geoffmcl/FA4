@@ -55,7 +55,7 @@ Compiled using MSVC v.1400 on Oct  6 2007 at 10:15:26, run by Geoff McLane, on D
                                                     Happy searching...
    =========================================== */
 
-#define	TAILSTG	"                                                    Happy searching..."
+#define	TAILSTG	"                                                    Happy searching...\n"
 //#define  SWLEAD   "      "
 #define  SWLEAD   " "
 
