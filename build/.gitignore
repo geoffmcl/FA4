@@ -18,4 +18,5 @@ Win32/*
 ipch/*
 *.opensdf
 fa4
+install_manifest.txt
 

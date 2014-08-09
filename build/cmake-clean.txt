@@ -3,4 +3,5 @@ install_manifest.txt
 libpcre.a
 libgrmLib.a
 fa4
+install_manifest.txt
 
