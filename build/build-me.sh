@@ -41,9 +41,11 @@ if [ ! "$?" = "0" ]; then
 	exit 1
 fi
 
+echo ""
 echo "$BN: appears a successful build... see $BLDLOG for details"
-
+echo ""
 echo "$BN: Time for 'make install' IFF desired... to $HOME/bin, unless changed..."
+echo ""
 
 # eof
 
