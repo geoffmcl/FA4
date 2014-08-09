@@ -2452,7 +2452,7 @@ void  AddTrailingSlash( char * lpv2 )
       strcat( lpv2, "\\" );
 }
 
-#ifdef ADDDIRLST
+// #ifdef ADDDIRLST
 ///////////////////////////////////////////////////////////////////////////////
 // FUNCTION   : OutALine
 // Return type: void 
@@ -2700,7 +2700,7 @@ void	OutALine( WS, char * lpv, uint32_t *pln, int bflg, uint32_t dwoff )
    // UNREFERENCED_PARAMETER(bflg);
 }
 
-#endif // #ifdef ADDDIRLST
+// #endif // #ifdef ADDDIRLST
 
 
 ///////////////////////////////////////////////////////////////////////////////

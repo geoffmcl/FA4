@@ -267,8 +267,12 @@
 #define     ADDLOPTION
 
 #undef     ADDFCOUNT   // FIX20010824 - Minimum FIND count before OUTPUT
+
+#ifdef WIN32
 // FIX20010715 = search for latest DATE in CVS entries file
 #define  ADDCVSDATE
+#endif
+
 // output in ORDER
 #define  USEFINDLIST    // above change to FIND list = FIX20010703
 #define  MXONEFIND      1024     // max for a single find string
