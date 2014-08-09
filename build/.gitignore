@@ -13,3 +13,6 @@ Debug/*
 Release/*
 Win32/*
 *.dir/*
+*.sdf
+*.suo
+ipch/*
