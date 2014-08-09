@@ -700,8 +700,13 @@ int	Open4Read( LPGFS lpgfs )
 	if( ( !flg ) &&
 		( lpgfs ) )
 	{
-		if( VH( lpgfs->fs_hHnd  ) )
+		if( VH( lpgfs->fs_hHnd  ) ) {
+#ifdef _MSC_VER
 			CloseHandle( lpgfs->fs_hHnd );
+#else
+            fclose( lpgfs->fs_hHnd );
+#endif
+        }
 		lpgfs->fs_hHnd = INVALID_HANDLE_VALUE;
 	}
 	return flg;
@@ -742,7 +747,7 @@ int	CloseARead( LPGFS lpgfs )
 }
 
 #ifndef _MSC_VER
-int ReadFile( HANDLE hFile, void *pBuf, uint32_t len, uint32_t *pread )
+int ReadFile( HANDLE hFile, void *pBuf, uint32_t len, uint32_t *pread, void *vp )
 {
     int iret = 0;
     uint32_t red = fread( pBuf, 1, len, hFile );
@@ -1392,7 +1397,7 @@ int	LoadFile2( WS, LPLFSTR lpLF, int fExit )
 			{
 				if( VERB6 )
 				{
-					sprintf( lpVerb, "FH=%x ... ", fp );
+					sprintf( lpVerb, "FH=%p ... ", (void *)fp );
 					boi( lpVerb );
 				}
 				*lpDW = (uint32_t)s64; // LoadFile2() - get LENGTH of an INPUT file
