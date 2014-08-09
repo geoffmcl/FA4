@@ -14,6 +14,18 @@ fi
 ##############################################
 TMPOPTS="-DCMAKE_INSTALL_PREFIX=$HOME"
 #############################################
+# Use -DCMAKE_BUILD_TYPE=Debug to add gdb symbols
+# Use -DCMAKE_VERBOSE_MAKEFILE=ON
+
+for arg in $@; do
+	if [ "$arg" = "VERBOSE" ]; then
+		TMPOPTS="$TMPOPTS -DCMAKE_VERBOSE_MAKEFILE=ON"
+	elif [ "$arg" = "DEBUG" ]; then
+		TMPOPTS="$TMPOPTS -DCMAKE_BUILD_TYPE=Debug"
+	else
+		TMPOPTS="$TMPOPTS $arg"
+	fi
+done
 
 echo "$BN: Doing: 'cmake .. $TMPOPTS' to $BLDLOG"
 cmake .. $TMPOPTS >> $BLDLOG 2>&1
