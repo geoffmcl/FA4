@@ -1,5 +1,14 @@
-
-// GrmOut.h
+/*\
+ * grmOut.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * file and console io ...
+ *
+\*/
 #ifndef	_GrmOut_h
 #define	_GrmOut_h
 #include <stdint.h>
@@ -42,4 +51,4 @@ extern   int     bRedirON;   // TRUE if standard out is being REDIRECTED
 // NOTE: This bRedirON is only VALID AFTER the first oi() call
 
 #endif	// _GrmOut_h
-// eof - GrmOut.h
+// eof - grmOut.h

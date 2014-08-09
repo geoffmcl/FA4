@@ -1,5 +1,14 @@
-
-// Fa4.h
+/*\
+ * Fa4.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * primary single header that include all other headers
+ *
+\*/
 #ifndef	_Fa4_h
 #define	_Fa4_h
 
@@ -102,7 +111,6 @@ extern char *g_ProgramName;
 
 #define	Err_Exit( a )	Error_Exit( pWS, a )
 #define CHKMEM(a) if( !a ) { prt("C:ERROR: MEMORY FAILED!"MEOR ); exit(-1); }
-
 
 
 #endif		// _Fa4_h

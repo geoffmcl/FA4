@@ -1,6 +1,15 @@
-
-// Fa4Out.c
-
+/*\
+ * Fa4Out.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * save output in double inked list...
+ * printf out list...
+ *
+\*/
 #include "Fa4.h"
 
 void  add2list( PLE ph, char * lpo ) // like PLE ph = &g_sOutList;

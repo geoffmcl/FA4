@@ -1,5 +1,12 @@
-
-// fa4Find.c
+/*\
+ * fa4Find.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+\*/
 #include "Fa4.h"
 #undef  EXTRA_DEBUG
 
@@ -54,6 +61,7 @@ uint32_t	   lpoff[MXLPS+2];      // keep a set of PREVIOUS line offsets
 
 PMWL g_pActWorkList = 0;
 
+#if 0
 void	ShowALLFinds_NOT_USED( WS, uint32_t dwFinds, uint32_t dwItems, char * lpd )
 {
 	char *	lpf;
@@ -104,6 +112,7 @@ void	ShowALLFinds_NOT_USED( WS, uint32_t dwFinds, uint32_t dwItems, char * lpd )
 
 	prt( lpVerb );
 }
+#endif
 
 void	ShowFinds( WS, uint32_t dwFinds, uint32_t dwItems, char * lpd )
 {

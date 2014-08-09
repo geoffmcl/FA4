@@ -1,6 +1,14 @@
-
-
-// grmLib.c
+/*\
+ * grmLib.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * general functions ...
+ *
+\*/
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdint.h>

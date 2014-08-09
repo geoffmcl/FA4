@@ -1,8 +1,18 @@
-
-// Fa4Wild.c
-// handle wild card file name input ...
-
+/*\
+ * Fa4Wild.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * handle wild card file name input ...
+ * Scan a directory, and do finds in files matching the input mask
+ *
+\*/
 #include "Fa4.h"
+
+static const char *module = "Fa4Wild";
 
 uint32_t g_dwFoundFileCnt = 0;
 uint32_t g_dwFoundDirsCnt = 0;
@@ -149,12 +159,12 @@ int	MatchFiles2( char * lp1, char * lp2 )
       int errptr = 0;
       int res;
       pcre * pre;
-      if(GVERB9) sprtf( "v9: Compiling regex [%s] to check [%s] ...\n", wildregex, lp2 );
+      if(GVERB9) sprtf( "%s: v9: Compiling regex [%s] to check [%s] ...\n", module, wildregex, lp2 );
       pre = pcre_compile(wildregex, PCRE_CASELESS, &error, &errptr, gp_pcre_tables );
       if(pre) {
          res = pcre_exec( pre, 0, lp2, strlen(lp2), 0, 0, &gi_pcre_offsets[0], PCRE_MAX_OFFSETS );
          if(GVERB9) {
-            sprtf( "v9: pcre_exec returned %d (%s)...(MatchFiles=%s)\n", res,
+            sprtf( "%s: v9: pcre_exec returned %d (%s)...(MatchFiles=%s)\n", module, res,
                (res >= 0) ? "Ok" : "No",
                (bRet ? "Ok" : "No") );
          }
@@ -171,7 +181,7 @@ int	MatchFiles2( char * lp1, char * lp2 )
                   }
                }
                if (_s_iOnly_Once == 0) {
-                   sprtf( "WARNING: Was NO, but REGEXE is YES [%s] [%s] CHECK [%s] [%s]... accepting REGEX!"MEOR,
+                   sprtf( "%s: WARNING: Was NO, but REGEXE is YES [%s] [%s] CHECK [%s] [%s]... accepting REGEX!"MEOR, module,
                       lp1, lp2, wildname, wildregex );
                }
                bRet = TRUE; // FIX20120516 - Accept file name MATCHED if REGEX says YES - NEW BEHAVIOUR!!!
@@ -179,7 +189,7 @@ int	MatchFiles2( char * lp1, char * lp2 )
             }
          } else {
             if( bRet ) {
-               sprtf( "WARNING: previous is YES, REGEXE is NO [%s] [%s] CHECK wild %s [%s]? ..."MEOR,
+               sprtf( "%s: WARNING: previous is YES, REGEXE is NO [%s] [%s] CHECK wild %s [%s]? ..."MEOR, module,
                   lp1, lp2, wildname, wildregex );
             }
          }
@@ -229,7 +239,7 @@ void Process_Wilds( WS, char *lpwild )
 
 	lpfil = glpActive;	// Get the BUFFER for the file name
     if( VERB9 ) {
-       sprintf( lpVerb, "v9: NOTE: Find using [%s]"MEOR, lpmask );
+       sprintf( lpVerb, "%s: v9: NOTE: Find using [%s]"MEOR, module, lpmask );
         prt(lpVerb);
     }
     dp = opendir(lpd);
@@ -243,7 +253,7 @@ void Process_Wilds( WS, char *lpwild )
                 filcount++;
                 g_dwFoundFileCnt++;
                 if( VERB9 ) {
-                    sprintf( lpVerb, "v9: Checking %s ..."PRTTERM, d->d_name );
+                    sprintf( lpVerb, "%s: v9: Checking %s ..."PRTTERM, module, d->d_name );
                     prt( lpVerb );
                 }
                 if( MatchFiles2( lpf, d->d_name ) ) {
@@ -257,7 +267,7 @@ void Process_Wilds( WS, char *lpwild )
                     g_ulTotalBRej += ul1;
                     if( VERB9 ) {
                         sprintf( lpVerb, 
-                           "v9: REJECT %u by MatchFiles %s ..."PRTTERM,
+                           "%s: v9: REJECT %u by MatchFiles %s ..."PRTTERM, module,
                             g_dwFoundRejCnt,
                             d->d_name );
                         prt( lpVerb );
@@ -274,7 +284,7 @@ void Process_Wilds( WS, char *lpwild )
         }
         closedir(dp);
         if( VERB9 ) {
-           sprintf( lpVerb, "v9: Found %u file%s, and %u folder%s"MEOR,
+           sprintf( lpVerb, "%s: v9: Found %u file%s, and %u folder%s"MEOR, module,
                 filcount,
                 ((filcount == 1) ? "" : "s"),
                 dircount,
@@ -283,7 +293,7 @@ void Process_Wilds( WS, char *lpwild )
         }
     } else {
         if( VERB9 ) {
-           sprintf( lpVerb, "v9: None found %s ..."PRTTERM, lpwild );
+           sprintf( lpVerb, "%s: v9: None found %s ..."PRTTERM, module, lpwild );
             prt( lpVerb );
         }
     }

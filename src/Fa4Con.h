@@ -1,5 +1,14 @@
-
-// Fa4Con.h
+/*\
+ * Fa4Con.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * console OS entry ...
+ *
+\*/
 #ifndef	_Fa4Con_H
 #define	_Fa4Con_H
 

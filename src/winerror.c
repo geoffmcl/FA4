@@ -1,10 +1,17 @@
-
+/*\
+ * winerror.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * convert windows error values to a string ...
+ *
+\*/
 /************************************************************************
-*                                                                       *
 *   winerror.h --  error code definitions for the Win32 API functions   *
-*                                                                       *
 *   Copyright (c) 1991-1996, Microsoft Corp. All rights reserved.       *
-*                                                                       *
 ************************************************************************/
 
 //#ifndef _WINERROR_

@@ -1,6 +1,15 @@
-
-// Saved as Fa4List.h
-// YahuList.h	(was FixFList.h ( was DumpList.h	(was ewmList.h)))
+/*\
+ * Fa4List.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * double linked list macros ...
+ * (was YahuList.h	(was FixFList.h ( was DumpList.h	(was ewmList.h))))
+ *
+\*/
 #ifndef	_YahuList_HH
 #define	_YahuList_HH
 // Copied from FixfList.h on 15 March, 2001 for YAHU project

@@ -1,5 +1,15 @@
-
-// Fa4Wild.h
+/*\
+ * Fa4Wild.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * handle wild card file name input ...
+ * Scan a directory, and do finds in files matching the input mask
+ *
+\*/
 #ifndef  _Fa4Wild_h
 #define  _Fa4Wild_h
 

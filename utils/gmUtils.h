@@ -1,5 +1,14 @@
-
-// GmUtils.h
+/*\
+ * gmUtils.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * general utility functions ...
+ *
+\*/
 #ifndef	_GmUtils_h
 #define	_GmUtils_h
 

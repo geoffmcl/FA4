@@ -1,6 +1,14 @@
-
-
-// gmUtil.c
+/*\
+ * gmUtil.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * general utility functions ...
+ *
+\*/
 #ifdef WIN32
 #ifndef  _CRT_SECURE_NO_WARNINGS
 #define  _CRT_SECURE_NO_WARNINGS

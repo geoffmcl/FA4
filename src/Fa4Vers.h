@@ -1,8 +1,19 @@
-// Fa4Vers.h
+/*\
+ * Fa4Vers.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * HISTORY - grwoing upwards
+ * NOTE: Also remember to change VERSION information in rc file!
+ *
+\*/
 #ifndef	_Fa4Vers_H
 #define	_Fa4Vers_H
-// HISTORY - NOTE: Also remember to change VERSION information in rc file!
 // current version
+
 // FIX20140727 - Convert to a cmake project, in preparartion of a linux compile
 #define  PVERS    "V4.1.0"
 #define  PDATE    "2014 Jul 27"
@@ -424,4 +435,3 @@
 
 #endif	/* _Fa4Vers_H */
 // eof - Fa4Vers.h
-

@@ -1,6 +1,18 @@
-// Fa4Work.h
+/*\
+ * Fa4Work.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * an allocate 'work' structure to hold variables
+ * and macros to address those variables...
+ *
+\*/
 #ifndef	_Fa4Work_H
 #define	_Fa4Work_H
+#include <stdint.h>
 
 #define		MXINPFS		10
 #define     MXOVR       32

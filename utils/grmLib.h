@@ -1,6 +1,16 @@
-
-// grmLib.h - MAIN - August, 1997
-// Nov 1999 - Added ICO file type
+/*\
+ * grmLib.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * general functions ...
+ * grmLib.h - MAIN - August, 1997
+ * Nov 1999 - Added ICO file type
+ *
+\*/
 #ifndef	_GRMLIB_H
 #define	_GRMLIB_H
 #include <stdint.h>

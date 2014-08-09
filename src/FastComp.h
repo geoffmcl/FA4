@@ -1,6 +1,15 @@
-
-// FastComp.h
-// For FASTER compiles
+/*\
+ * FastComp.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * For FASTER compiles ...
+ * Used to help in old, slow machine, but no longer very relevant
+ *
+\*/
 #define		STRICT
 #define		WIN32_LEAN_AND_MEAN
 

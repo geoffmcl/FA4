@@ -1,5 +1,12 @@
-
-// Fa4Show.c
+/*\
+ * Fa4Show.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+\*/
 #include "Fa4.h"
 #undef  EXTRA_DEBUG2
 

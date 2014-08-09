@@ -1,7 +1,17 @@
-// Fa4Comp.c
-// Full compare of FIND
-
+/*\
+ * Fa4Comp.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * Full compare of FIND ...
+ *
+\*/
 #include "Fa4.h"
+
+// static const char *module = "Fa4Comp";
 
 int	NotAsciiRng( char c )
 {

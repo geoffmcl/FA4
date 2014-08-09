@@ -1,5 +1,15 @@
-
-// Fa4Help.c
+/*\
+ * Fa4Help.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * process the command line...
+ * help text output
+ *
+\*/
 #include <sys/types.h>
 #include <sys/stat.h>   // for stat function
 #include	"Fa4.h"

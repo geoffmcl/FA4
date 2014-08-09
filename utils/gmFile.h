@@ -1,3 +1,14 @@
+/*\
+ * gmFile.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * general file defines ...
+ *
+\*/
 
 // GMFile.h
 #ifndef	_GMFile_h

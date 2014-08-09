@@ -1,8 +1,17 @@
-
-// Fa4Con.c
+/*\
+ * Fa4Con.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * console - main OS entry...
+ *
+\*/
 #undef		UWEACC1		// special version
-
 #include	"Fa4.h"		// All incusive include
+
 extern	void	DisableDiagFile( void );
 extern	void	EnableDiagFile( void );
 extern	int		Fa4_main( int argc, char **argp );
@@ -178,8 +187,9 @@ int main( int argc, char **argp )
 
 #else	/* !UWEACC1 */
 
-
+// ============================
 // ONLY FOR CONSOLE APPLICATION
+// =============================
 int main( int argc, char **argp )
 {
 	int	iret;

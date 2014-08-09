@@ -1,5 +1,14 @@
-
-// GrmOut.c
+/*\
+ * grmOut.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * file and console io ...
+ *
+\*/
 #ifdef WIN32
 #define	WIN32_MEAN_AND_LEAN
 #include	<windows.h>

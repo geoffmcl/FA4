@@ -1,4 +1,12 @@
-
+/*\
+ * Fa4.c
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+\*/
 // ==============================================================
 // FA4.c
 // Windows 95/98 NT/2000 and ... 32-bit implementation of FA3.ASM
@@ -35,7 +43,7 @@
 // 1997 August 3 - Commenced using DC4.c source, just adding
 //					a FA4 switch.
 // 1997 July 18 - Commenced 32-bit version.
-// 1987 October, 87 - Commenced 16-bit ASM version on which                                    Geoff McLane
+// 1987 October, 87 - Commenced 16-bit ASM version on which
 //		this is based.
 //
 // Brief Description
@@ -57,7 +65,7 @@
 //		and EACH item of the Find String(s) will be located
 //		in a memory mapped file image.
 //
-// Geoff R. McLane - MailTo: GeoffAir _AT_ hotmail _DOT_ com
+// Geoff R. McLane - MailTo: reports _AT_ geoffair _DOT_ info
 //
 // ==============================================================
 #include	"Fa4.h"		// All incusive include

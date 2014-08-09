@@ -1,6 +1,14 @@
-
-
-// Fa4Help.h
+/*\
+ * Fa4Help.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+ * process command arguments, and output help ...
+ *
+\*/
 #ifndef	_Fa4Help_H
 #define	_Fa4Help_H
 

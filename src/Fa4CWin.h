@@ -1,3 +1,12 @@
+/*\
+ * Fa4CWin.h
+ *
+ * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ *
+ * Licence: GNU GPL version 2
+ * See LICENSE.txt in the source
+ *
+\*/
 //////////////////////////////////////////////////////////////////////////
 // Fa4CWin.h - 20140729
 // Compatible Windows - Fill in things missing in NOT WIN32 systems
