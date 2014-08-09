@@ -236,6 +236,7 @@ int  strbgn( char * lps, char * lpd )
    return bRet;
 }
 
+#if (defined(WIN32) && defined(USE_SYSTEM_TIME))
 int  Stg2SysTm( char * lps, SYSTEMTIME * pt )
 {
    char *   lpd;
@@ -314,7 +315,6 @@ int  Stg2SysTm( char * lps, SYSTEMTIME * pt )
 }
 
 // added April, 2001
-#if (defined(WIN32) && defined(USE_SYSTEM_TIME))
 void  AppendDateTime( char * lpb, LPSYSTEMTIME pst ) // IFF USE_SYSTEM_TIME
 {
    sprintf(EndBuf(lpb),
