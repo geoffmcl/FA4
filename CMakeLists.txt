@@ -118,6 +118,9 @@ set( ${name}_HDRS
 add_library( ${name} ${LIB_TYPE} ${${name}_SRCS} ${${name}_HDRS} )
 list(APPEND add_LIBS ${name})
 
+# seems this source NOT used
+#     ${dir}/Pfile.c
+
 set(name fa4)
 set(dir src)
 set( ${name}_SRCS
@@ -130,7 +133,6 @@ set( ${name}_SRCS
     ${dir}/Fa4Show.c
     ${dir}/Fa4Util.c
     ${dir}/Fa4Wild.c
-    ${dir}/Pfile.c
     )
 set( ${name}_HDRS
     ${dir}/Fa4.h
