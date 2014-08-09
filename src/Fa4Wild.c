@@ -2,7 +2,7 @@
 // Fa4Wild.c
 // handle wild card file name input ...
 
-#include "fa4.h"
+#include "Fa4.h"
 
 uint32_t g_dwFoundFileCnt = 0;
 uint32_t g_dwFoundDirsCnt = 0;
