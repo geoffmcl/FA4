@@ -484,7 +484,7 @@ char *	DVf2s( double source )
 	// Returns buffer pointer to digits, and
 	// a decimal position counter, and
 	// the sign.
-	buffer = _ecvt( source, precision, &decimal, &sign ); // #if defined(WIN32) && defined(NEED_STG_FUNCS) guard
+	buffer = ECVT( source, precision, &decimal, &sign ); // #if defined(WIN32) && defined(NEED_STG_FUNCS) guard
 	lpb = GetABuf();	// Get a (next) text buffer
 	lpwb = &wbuf[0];	// and a work buffer (if reqd)
 	i = strlen( buffer );	// Get length of digits.

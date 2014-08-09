@@ -180,6 +180,14 @@ typedef  struct tagSPLITFILENAME {
 
 #define  GMGFP(a,b)  GMGetFPath( a, (*b).szDrive, (*b).szPath, (*b).szFN, (*b).szExt )
 
+#ifndef ECVT
+#ifdef WIN32
+#define ECVT _ecvt
+#else
+#define ECVT ecvt
+#endif
+#endif // ECVT
+
 #endif	// _GmUtils.h
 
 // **********************************************************

@@ -115,5 +115,13 @@ extern	int	CenterDialog( HWND hChild, HWND hParent );
 // NOTE: This MUST be the LAST
 #define		FT_NONE				FT_UNK | 0x0000001d
 
+#ifndef ECVT
+#ifdef WIN32
+#define ECVT _ecvt
+#else
+#define ECVT ecvt
+#endif
+#endif // ECVT
+
 #endif	// _GRMLIB_H
 // eof - grmLib.h - MAIN

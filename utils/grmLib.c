@@ -858,7 +858,7 @@ void	Float2Stg( char * lps, float factor, int precision )
 {
 	int		decimal, sign;
 	char *	buffer;
-	buffer = _ecvt( factor, precision, &decimal, &sign ); // WIN32 guard
+	buffer = ECVT( factor, precision, &decimal, &sign ); // WIN32 guard
 	Buffer2Stg( lps, buffer, decimal, sign, precision );
 }
 
@@ -867,7 +867,7 @@ void	AFloat2Stg( char * lps, float factor, int precision )
 {
 	int		decimal, sign;
 	char *	buffer;
-	buffer = _ecvt( factor, precision, &decimal, &sign ); // WIN32 guard
+	buffer = ECVT( factor, precision, &decimal, &sign ); // WIN32 guard
 	Buffer2Lps2( lps, buffer, decimal, sign, precision );
 }
 
@@ -1644,7 +1644,6 @@ void	RTrimDecimal( char * lpr )
 	}
 }
 
-#ifdef WIN32
 // Dbl2Str Dbl2Stg DbltoStg
 void	Double2Stg( char * lps, double factor )
 {
@@ -1652,7 +1651,7 @@ void	Double2Stg( char * lps, double factor )
 	char *	buffer;
 
 	precision = 16;
-	buffer = _ecvt( factor, precision, &decimal, &sign ); // WIN32 guard
+	buffer = ECVT( factor, precision, &decimal, &sign ); // WIN32 guard
 	Buffer2Stg( lps, buffer, decimal, sign, precision );
 }
 
@@ -1671,13 +1670,12 @@ void    Dbl2Stg( char * lps, double factor, int prec )
     else
         precision = 16;
 
-    buffer = _ecvt( factor, precision, &decimal, &sign ); // WIN32 guard
+    buffer = ECVT( factor, precision, &decimal, &sign ); // WIN32 guard
 
     Buffer2Stg( lps, buffer, decimal, sign, precision );
 }
 #endif   // !DISKDB     // has its own copy in DDBUtil.c
 
-#endif // WIN32
 
 void	Double2TStg( char * lps, double factor )
 {
