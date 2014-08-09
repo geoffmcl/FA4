@@ -5,4 +5,11 @@ bldlog-1.txt
 cmake_install.cmake
 libgrmLib.a
 libpcre.a
-
+*.vcxproj
+*.filters
+*.user
+Debug/*
+*.sln
+Release/*
+Win32/*
+*.dir/*
