@@ -16,3 +16,4 @@ Win32/*
 *.sdf
 *.suo
 ipch/*
+*.opensdf
