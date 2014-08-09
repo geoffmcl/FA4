@@ -64,9 +64,9 @@
 extern void	ShowLine( WS, uint32_t dwoff, uint32_t dwmax, uint32_t *pdw, uint32_t *pln );
 extern int gbDirList;
 extern int gbDirNorm;
-#ifdef ADD_DIRLIST_SORT2
+// #ifdef ADD_DIRLIST_SORT2
 extern int gbOrdList;
-#endif // #ifdef ADD_DIRLIST_SORT2
+// #endif // #ifdef ADD_DIRLIST_SORT2
 
 #undef   ADDDBL2  // FIX20001022 - fix find of "'@'" - and REMOVE this "doubling"
 //#define  MINFNSP           40
@@ -2050,6 +2050,19 @@ char *   IsValidEntries( char * lpv )
 
 #endif   // #ifdef   ADDCVSDATE
 
+typedef struct tagLINEPTRS {
+   char * pdate; // pointer to DATE
+   char * ptime; // pointer to TIME
+   // FIX20061211 - time may be 24 hours time = NO AM|PM
+   int   time12; // is 12 hour time - ie with AM|PM
+   char * psize; // pointer to SIZE
+   char * pname; // pointer to NAME
+   char fullname[1024]; // and the full PATH name
+}LINEPTRS, * PLINEPTRS;
+
+static LINEPTRS sLinePtrs;
+PLINEPTRS psLP = &sLinePtrs;
+
 #ifdef WIN32
 
 int gotfiledatetime( char * lpv, WIN32_FIND_DATA * pfd, DateStyle amer ) // WIN32 ONLY
@@ -2206,15 +2219,6 @@ FILETIME AddFileDateTime( char * lpv2, char * lpv, DateStyle amer ) // WIN32 ONL
 
 #ifdef ADDDIRLST
 ////////////////////////////////////////////
-typedef struct tagLINEPTRS {
-   char * pdate; // pointer to DATE
-   char * ptime; // pointer to TIME
-   // FIX20061211 - time may be 24 hours time = NO AM|PM
-   int   time12; // is 12 hour time - ie with AM|PM
-   char * psize; // pointer to SIZE
-   char * pname; // pointer to NAME
-   char fullname[1024]; // and the full PATH name
-}LINEPTRS, * PLINEPTRS;
 
 typedef enum {
    header,
@@ -2338,9 +2342,6 @@ char * get_clean_number(PSTR ps)
    pb[out] = 0;
    return pb;
 }
-
-static LINEPTRS sLinePtrs;
-PLINEPTRS psLP = &sLinePtrs;
 
 #ifdef ADD_DIRLIST_SORT2
 //     if( gbOrdList || VERB4 ) { Add2SortedList( lpv2 );

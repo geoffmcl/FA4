@@ -1752,9 +1752,9 @@ Error_U:
 int   gbDirList = 0;
 int   gbDirNorm = 0; // FIX20060729 - add -dn for 'normal' list, as per DIR command
 
-#ifdef ADD_DIRLIST_SORT2
+// #ifdef ADD_DIRLIST_SORT2
 int   gbOrdList = 0; // 1=order date 2=order size
-#endif // #ifdef ADD_DIRLIST_SORT2
+// #endif // #ifdef ADD_DIRLIST_SORT2
 
 char * pszFrontPage[] = {
    { "_derived" },
