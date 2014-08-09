@@ -1577,7 +1577,7 @@ int	FixDir( WS,
 			}
 			else if( IsDDot( lpt ) )
 			{
-				strcat( lpd, "\\*.*" );
+				strcat( lpd, PATH_SEP"*.*" );
 			}
 			else if( HasDot( lpt ) )
 			{
@@ -1585,14 +1585,14 @@ int	FixDir( WS,
 			}
 			else	// Assume it ENDS WITH A DIRECTORY
 			{
-				strcat( lpd, "\\*.*" );
+				strcat( lpd, PATH_SEP"*.*" );
 			}
 		}
 		else	// Ends in ":" or "/" or "\"
 		{
 			if( c == ':' )
 			{
-				strcat( lpd, "\\*.*" );
+				strcat( lpd, PATH_SEP"*.*" );
 			}
 			else
 			{
@@ -1799,7 +1799,7 @@ void  MakeDiagFile( void )
    strcpy(lpf,g_ProgramName);
 #endif // WIN32 y/n
 
-   p = strrchr(lpf, '\\');
+   p = strrchr(lpf, PATH_CHAR);
    if(p)
       p++;
    else
@@ -1811,7 +1811,7 @@ void  MakeDiagFile( void )
       char *   ptmp = &g_szTmpBuf[0];
       strcpy(ptmp,lpf);
       ptmp[ strlen(ptmp) - 1 ] = 0;
-      p = strrchr(ptmp,'\\');
+      p = strrchr(ptmp,PATH_CHAR);
       if( p && (strcmpi( &p[1], "DEBUG")==0) )
       {
          p++;
@@ -2460,8 +2460,8 @@ void Add2SortedList( WS, char * lpv2, char * lpv, int Type )
 void  AddTrailingSlash( char * lpv2 )
 {
    size_t ilen = strlen( lpv2 );
-   if( ilen && ( lpv2[ilen-1] != '\\' ) )
-      strcat( lpv2, "\\" );
+   if( ilen && ( lpv2[ilen-1] != PATH_CHAR ) )
+      strcat( lpv2, PATH_SEP );
 }
 
 // #ifdef ADDDIRLST
@@ -2939,13 +2939,13 @@ void  DoOutDOSName( WS )
       j = 0;
       for( i = 0; i < k; i++ )
       {
-         if( glpActive[i] == '\\' )
+         if( glpActive[i] == PATH_CHAR )
          {
             if( glpActive[j] == ':' )
             {
                gszDOSLast[i] = 0;
                strcpy(gszDOSPth,gszDOSLast); // copy in the DRIVE
-               strcat(gszDOSPth,"\\");
+               strcat(gszDOSPth,PATH_SEP);
             }
             else
             {
@@ -2956,7 +2956,7 @@ void  DoOutDOSName( WS )
                {
                   FixAlternate(pWS,&fd);
                   strcat(gszDOSPth,&fd.cAlternateFileName[0]);
-                  strcat(gszDOSPth,"\\"); // add in the PATH
+                  strcat(gszDOSPth,PATH_SEP); // add in the PATH
                   FindClose(hFind);
                }
                //else
@@ -3197,7 +3197,7 @@ char *   GetMakeLine( char * lpm, uint32_t dwm )
          else
          {
             dwk++;
-            if( c == '\\' )
+            if( c == PATH_CHAR )
                bcont = TRUE;
          }
       }
@@ -3213,7 +3213,7 @@ char *   GetMakeLine( char * lpm, uint32_t dwm )
             c = lpm[dwi];
             if( c > ' ' )
             {
-               if( c == '\\' )
+               if( c == PATH_CHAR )
                {
                   bcont = TRUE;     // got a LINE continuation character
                }
@@ -4316,7 +4316,7 @@ void	Process_Recursive( WS, char * lpwild )
                // ==============================================================
 					lprm[mlen] = 0;      // clear back to the previous FOLDER
 					strcat( lprm, lpn ); // &fd.cFileName[0] );  // add this FOLDER
-					strcat( lprm, "\\" );  // and separator
+					strcat( lprm, PATH_SEP );  // and separator
 					strcat( lprm, lpf );   // and our FILE name/mask
 #ifdef USE_EXCLUDE_LIST
                if( InExcludeD( lpn ) ) {
@@ -4443,7 +4443,7 @@ void	DoThisFile( WS, char * lpf, int bFlg )
                 Find_In_File( pWS );
             } else if (IsValidDir(lpf)) {
                 // FIX20070914 - If given a DIRECTORY
-                strcat( glpActive, "\\*.*" );   // make it WILD
+                strcat( glpActive, PATH_SEP"*.*" );   // make it WILD
                 if( VERB9 ) {
                     sprintf( lpVerb, "v9: Processing WILD: %s adding *.*"PRTTERM, lpf );
                     prt( lpVerb );

@@ -94,8 +94,10 @@ typedef  struct   tagMWL {
 #ifndef PATH_SEP
 #ifdef WIN32
 #define PATH_SEP "\\"
+#define PATH_CHAR '\\'
 #else
 #define PATH_SEP "/"
+#define PATH_CHAR '/'
 #endif
 #endif // PATH_SEP
 

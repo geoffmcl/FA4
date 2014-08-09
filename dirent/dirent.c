@@ -48,8 +48,8 @@
 #endif
 
 #define SUFFIX	_T("*")
-#define	SLASH	_T("\\")
-
+#define	BAK_SLASH	_T("\\")
+#define FOR_SLASH   _T("/")
 
 /*
  * opendir
@@ -98,7 +98,7 @@ _topendir (const _TCHAR *szPath)
 
   /* Allocate enough space to store DIR structure and the complete
    * directory path given. */
-  nd = (_TDIR *) malloc (sizeof (_TDIR) + (_tcslen(szFullPath) + _tcslen (SLASH) +
+  nd = (_TDIR *) malloc (sizeof (_TDIR) + (_tcslen(szFullPath) + _tcslen (BAK_SLASH) +
 			 _tcslen(SUFFIX) + 1) * sizeof(_TCHAR));
 
   if (!nd)
@@ -116,7 +116,7 @@ _topendir (const _TCHAR *szPath)
       nd->dd_name[_tcslen (nd->dd_name) - 1] != _T('/') &&
       nd->dd_name[_tcslen (nd->dd_name) - 1] != _T('\\'))
     {
-      _tcscat (nd->dd_name, SLASH);
+      _tcscat (nd->dd_name, BAK_SLASH);
     }
 
   /* Add on the search pattern */

@@ -181,8 +181,8 @@ int	DVGetCwd( char * lpb, uint32_t siz )
 		_getcwd( lpd, MAX_PATH );
 		if( i = strlen( lpd ) )
 		{
-			if( lpd[i-1] != '\\' )
-				strcat( lpd, "\\" );
+			if( lpd[i-1] != PATH_CHAR )
+				strcat( lpd, PATH_SEP );
 		}
 	}
 	if( lpb && siz )	// Check the CALLER
@@ -744,7 +744,7 @@ char	c;
 			{
 				c = lpb[i-1];
 				if( !(( c == ':') || ( c == '\\')) )
-					strcat( lpb, "\\" );
+					strcat( lpb, PATH_SEP );
 			}
 		}
 		strcat( lpb, lpf );

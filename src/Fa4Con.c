@@ -147,8 +147,8 @@ void	ShowEnv( void )
 				if( dwk )
 				{
 					lpb[dwk] = 0;
-					if( lpb[dwk-1] != '\\' )
-						strcat(lpb,"\\");
+					if( lpb[dwk-1] != PATH_CHAR )
+						strcat(lpb,PATH_SEP);
 					dwk = strlen(lpb);
 					strcat(lpb,"EXCEL*.*");
 					if( ( hFind = FindFirstFile(lpb,&fd) ) &&

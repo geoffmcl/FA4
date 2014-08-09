@@ -267,9 +267,9 @@ void	DoLineChk( WS, char * lpb, uint32_t dwLnBgn, uint32_t dwi )
 				   i = strlen( &gcDirBuf[0] ); 
 				   if(i)
 				   {
-					   if( gcDirBuf[i-1] != '\\' )
+					   if( gcDirBuf[i-1] != PATH_CHAR )
 					   {
-						   strcat( gcDirBuf, "\\" );
+						   strcat( gcDirBuf, PATH_SEP );
 						   i++;
 					   }
 				   }
