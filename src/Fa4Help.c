@@ -86,7 +86,7 @@ void	Usage( WS, uint32_t Err )
 	//prt( "          Note 'C' runtime requires \\\" to include \"in command!"PRTTERM );
 	prt( "          Arg2 = [[D:\\]Path\\]File(s) or @FileList."PRTTERM );
 	prt( "          The @Input files are interpreted as a set of line delimited items."PRTTERM );
-	prt( "Switches: Each preceeded by '/' or '-' , space separated, case ignored."PRTTERM );
+	prt( "Switches: Each preceeded by '-' , space separated, case ignored."PRTTERM );
 #ifdef WIN32
 #ifdef   FIX20000902 // FIX input files in input file and add -8
 	prt( SWLEAD"-8          = Ouput file name in DOS format."PRTTERM );
@@ -295,7 +295,7 @@ void	Check4Help( WS, int argc, char * * argp )
             c = *cp;
          if(c)
 			{
-				if( ( c == '-' ) || ( c == '/' ) )
+				if( c == '-' ) // || ( c == '/' ) )
 				{
 					cp++;
 					c = *cp; 
@@ -329,7 +329,7 @@ void	Check4Verb( WS, int argc, char * * argp )
       if(cp)
          c = *cp;
       if(c) {
-			if( ( c == '-' ) || ( c == '/' ) )
+			if( c == '-' ) // || ( c == '/' ) )
 			{
 				cp++;
 				c = toupper(*cp);
@@ -2285,7 +2285,7 @@ int	ProcessArgs( LPWORKSTR pWS, int argc, char **argp, uint32_t level )
                 cp++;   // Bump past this ESCAPE char
                 c = 0;  // clear the current to get to file or folder
             }
-			if( ( c == '-' ) || ( c == '/' ) )
+			if( c == '-' )  // || ( c == '/' ) )
 			{
 				// Got a SWITCH
 				// ============
