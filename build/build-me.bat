@@ -31,13 +31,21 @@
 
 @echo Appears a successful build
 @echo.
-@echo No install at this time...
-@goto END
+@REM echo No install at this time...
+@REM goto END
 
 @echo Note install location %TMPINST%
-@echo *** CONTINUE with install? *** Only Ctrl+C aborts
-@pause
+@echo *** CONTINUE with install? *** Only 'y' continues ***
+@echo.
+@ask
+@if ERRORLEVEL 2 goto NOASK
+@if ERRORLEVEL 1 goto DOINST
+@echo.
+@echo No install at this time...
+@echo.
+@goto END
 
+:DOINST
 cmake -P cmake_install.cmake
 @REM echo Doing: 'cmake --build . --config release --target INSTALL'
 @REM echo Doing: 'cmake --build . --config release --target INSTALL' >> %TMPLOG%
@@ -47,6 +55,14 @@ cmake -P cmake_install.cmake
 @echo Done build and install of %TMPPRJ%...
 
 @goto END
+
+:NOASK
+@echo.
+@echo Can NOT find 'ask' utility in PATH
+@echo See : https://gitorious.org/fgtools/gtools
+@echo.
+@goto END
+
 
 :ERR1
 @echo cmake config, generation error
