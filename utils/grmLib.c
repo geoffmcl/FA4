@@ -632,6 +632,8 @@ void	CloseUserFile( HANDLE hf )
     }
 }
 
+#define		VLD		( hDFile && ( hDFile != HFILE_ERROR ) )
+
 void	CreateDiagFile( void )
 {
 #ifdef WIN32
@@ -645,9 +647,12 @@ void	CreateDiagFile( void )
         hDFile = INVALID_HANDLE_VALUE;
     }
 #endif
+    if (!VLD) {
+        fprintf(stderr,"\nWARNING: FAILED to open diag file '%s'!\n", szDTxt);
+    }
+
 }
 
-#define		VLD		( hDFile && ( hDFile != HFILE_ERROR ) )
 
 void	CloseDiagFile( void )
 {
