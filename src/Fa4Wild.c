@@ -217,29 +217,24 @@ Free_PRE:
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void Process_Wilds( WS, char *lpwild )
 {
-    char *lpd, *lpf, *lpmask, *lpfil;
+    char *lpd, *lpf, *lpfil;
     uint64_t ul1;
     DIR *dp;
+    // LOCAL STATS - just for this directory
     uint32_t dircount = 0;
     uint32_t filcount = 0;
-	//lpd = &gszFolder[0];
-	// lpf = &szDir2[0];
- 	lpf = (char *)MALLOC( LPTR, (3*(MAX_PATH+32)) ); // FIX20050212 - fix -r switch
+ 	lpf = (char *)MALLOC( LPTR, (2*(MAX_PATH+32)) ); // FIX20050212 - fix -r switch
     CHKMEM(lpf);
     lpd = &lpf[(MAX_PATH+32)];
-	//lpmask = &gszFileMask[0];
-    lpmask = &lpd[(MAX_PATH+32)];
 
 	SplitFN( lpd, lpf, lpwild );
     if (*lpd == 0) {
         strcpy(lpd,"." PATH_SEP);
     }
-	strcpy( lpmask, lpd );
-	strcat( lpmask, "*.*" );
 
-	lpfil = glpActive;	// Get the BUFFER for the file name
+	lpfil = glpActive;	// Get the BUFFER for the ACTIVE file/dir name
     if( VERB9 ) {
-       sprintf( lpVerb, "%s: v9: NOTE: Find using [%s]"MEOR, module, lpmask );
+       sprintf( lpVerb, "\n%s: v9: Opening dir %s, seek matching [%s]"MEOR, module, lpd, lpf );
         prt(lpVerb);
     }
     dp = opendir(lpd);
@@ -277,23 +272,45 @@ void Process_Wilds( WS, char *lpwild )
                 // is a DIRECTORY - forget DOT and DOUBLE DOT
                 char * lpn = d->d_name;
                 if( strcmp(lpn,".") && strcmp(lpn,"..") ) {
+                    strcat(lpfil,PATH_SEP);
+                    strcat(lpfil,lpf);
                     dircount++;
+#ifdef	ADDRECUR
+                	if( gfRecursive )
+	                {
+                        g_dwFoundDirsCnt++;
+#ifdef USE_EXCLUDE_LIST
+                       if( InExcludeD( d->d_name ) ) {
+                           g_dwDirsExcl++; // count another match to EXCLUDED
+                            if( VERB9 ) {
+                                sprintf( lpVerb, "%s: v9: Checking %s ..."PRTTERM, module, d->d_name );
+                                prt( lpVerb );
+                            }
+                       } else {
+                           Process_Wilds( pWS, lpfil ); // process this as WILD
+                       }
+#else // !#ifdef USE_EXCLUDE_LIST
+                       Process_Wilds( pWS, lprm ); // process this as WILD
+#endif // #ifdef USE_EXCLUDE_LIST y/n
+	                }
+#endif	// ADDRECUR
                 }
             }
             d = readdir(dp);
         }
         closedir(dp);
         if( VERB9 ) {
-           sprintf( lpVerb, "%s: v9: Found %u file%s, and %u folder%s"MEOR, module,
-                filcount,
-                ((filcount == 1) ? "" : "s"),
-                dircount,
-                ((dircount == 1) ? "" : "s") );
+           sprintf( lpVerb, "%s: v9: Done dir %s. Found %u file%s, and %u folder%s"MEOR, module,
+               lpd,
+               filcount,
+               ((filcount == 1) ? "" : "s"),
+               dircount,
+               ((dircount == 1) ? "" : "s") );
             prt(lpVerb);
         }
     } else {
         if( VERB9 ) {
-           sprintf( lpVerb, "%s: v9: None found %s ..."PRTTERM, module, lpwild );
+           sprintf( lpVerb, "%s: v9: opendir '%s' FAILED!"PRTTERM, module, lpd );
             prt( lpVerb );
         }
     }
