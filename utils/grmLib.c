@@ -23,6 +23,8 @@
 #include "grmLib.h"
 #include "grmOut.h"
 
+// #define ADD_REJ_DBG
+
 #ifdef	FC4W
 #define		NOGMUTIL
 #endif	/* FC4W */
@@ -456,9 +458,14 @@ static char	_s_body1[MAX_PATH+16];
 static char	_s_ext1[MAX_PATH+16];
 static char	_s_body2[MAX_PATH+16];
 static char	_s_ext2[MAX_PATH+16];
-int chk_rej( void )
+int chk_rej( char * lp1, char * lp2 )
 {
    int i;
+#ifdef ADD_REJ_DBG
+    int len1 = (int)strlen(lp1);
+    int len2 = (int)strlen(lp2);
+    fprintf(stderr,"Rejected compare of '%s'(%d) with '%s'(%d)\n", lp1, len1, lp2, len2 );
+#endif // ADD-REJ_DBG
    i = 0;
    return i;
 }
@@ -497,7 +504,7 @@ int	MatchFiles( char * lp1, char * lp2 )
 		}
 	}
    if( !flg ) {
-      chk_rej();
+      chk_rej(lp1,lp2);
    }
 	return flg;
 }
