@@ -258,7 +258,7 @@ int is_a_repeat_dir( char *dir )
 
 void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now does ALL files/dirs
 {
-    char *lpd, *lpf, *lpfil;
+    char *pdn, *pfn, *lpfil;
     uint64_t ul1;
     DIR *dp;
     // LOCAL STATS - just for this directory
@@ -280,18 +280,23 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
         return; // found and done a SINGLE file
     }
 
- 	lpf = (char *)MALLOC( LPTR, (2*(MAX_PATH+32)) ); // FIX20050212 - fix -r switch
-    CHKMEM(lpf);
-    lpd = &lpf[(MAX_PATH+32)];
-
-	SplitFN( lpd, lpf, lpwild );
-    if (*lpd == 0) {
-        strcpy(lpd,"." PATH_SEP);
+ 	pfn = (char *)MALLOC( LPTR, (2*(MAX_PATH+32)) ); // FIX20050212 - fix -r switch
+    CHKMEM(pfn);
+    pdn = &pfn[(MAX_PATH+32)];
+    if (VERB9) {
+        sprintf(lpVerb, "Allocated pfn=%p and pdn=%p\n", pfn, pdn );
+        prt(lpVerb);
+    }
+    *pfn = 0;
+    *pdn = 0;
+	SplitFN( pdn, pfn, lpwild );
+    if (*pdn == 0) {
+        strcpy(pdn,"." PATH_SEP);
     }
 
 #ifdef ADD_DIRS_DONE_DBG
-    if (is_a_repeat_dir(lpd)) {
-       sprintf( lpVerb, "%s: A repeated direcotory dir %s, while seeking  matching [%s]"MEOR, module, lpd, lpf );
+    if (is_a_repeat_dir(pdn)) {
+       sprintf( lpVerb, "%s: A repeated directory '%s', while seeking matching [%s]"MEOR, module, pdn, pfn );
         prt(lpVerb);
         return;
     }
@@ -299,10 +304,10 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
 
 	lpfil = glpActive;	// Get the BUFFER for the ACTIVE file/dir name
     if( VERB9 ) {
-       sprintf( lpVerb, "\n%s: v9: Opening dir %s, seek matching [%s]"MEOR, module, lpd, lpf );
+       sprintf( lpVerb, "\n%s: v9: Opening dir %s, seek matching [%s]"MEOR, module, pdn, pfn );
         prt(lpVerb);
     }
-    dp = opendir(lpd);
+    dp = opendir(pdn);
     if(dp) { 
         struct dirent *d = readdir(dp);
         while (d) {  // got a FIND FIRST
@@ -319,7 +324,7 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
                     }
                 }
             }
-            strcpy( lpfil, lpd );
+            strcpy( lpfil, pdn );
             strcat( lpfil, d->d_name );
             if (IsValidFile(lpfil)) {
                 ul1 = get_last_file_size64();
@@ -329,7 +334,7 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
                     sprintf( lpVerb, "%s: v9: Checking %s ..."PRTTERM, module, d->d_name );
                     prt( lpVerb );
                 }
-                if( MatchFiles2( lpf, d->d_name ) ) {
+                if( MatchFiles2( pfn, d->d_name ) ) {
                     // defined g_dwFoundMatchCnt = (total - unmatched)
                     g_ulTotalBytes += ul1;
                     gfDoneFile = FALSE;		// reset DONE FILE name
@@ -338,19 +343,21 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
                 } else {
                     g_dwFoundRejCnt++;
                     g_ulTotalBRej += ul1;
-                    if( VERB9 ) {
+                    if( VERB5 ) {
                         sprintf( lpVerb, 
-                           "%s: v9: REJECT %u by MatchFiles %s ..."PRTTERM, module,
+                           "%s: v5: %d REJECT '%s' by MatchFiles to '%s'"PRTTERM, module,
                             g_dwFoundRejCnt,
-                            d->d_name );
+                            d->d_name,
+                            pfn );
                         prt( lpVerb );
                     }
                 }
             } else {
-                // is a DIRECTORY - forget DOT and DOUBLE DOT
-                if( strcmp(lpn,".") && strcmp(lpn,"..") ) {
+                // is a DIRECTORY - DOT and DOUBLE DOT skipped
+                // if( strcmp(lpn,".") && strcmp(lpn,"..") ) {
+                if (IsValidDir(lpfil)) {
                     strcat(lpfil,PATH_SEP);
-                    strcat(lpfil,lpf);
+                    strcat(lpfil,pfn);
                     dircount++;
 #ifdef	ADDRECUR
                 	if( gfRecursive )
@@ -360,7 +367,7 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
                        if( InExcludeD( d->d_name ) ) {
                            g_dwDirsExcl++; // count another match to EXCLUDED
                             if( VERB9 ) {
-                                sprintf( lpVerb, "%s: v9: Checking %s ..."PRTTERM, module, d->d_name );
+                                sprintf( lpVerb, "%s: v9: Excluded '%s' ..."PRTTERM, module, d->d_name );
                                 prt( lpVerb );
                             }
                        } else {
@@ -371,6 +378,8 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
 #endif // #ifdef USE_EXCLUDE_LIST y/n
 	                }
 #endif	// ADDRECUR
+                } else {
+                    // NOT valid FILE or DIRECTORY - forget it??? - probably a link, or ???
                 }
             }
             d = readdir(dp);
@@ -378,7 +387,7 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
         closedir(dp);
         if( VERB9 ) {
            sprintf( lpVerb, "%s: v9: Done dir %s. Found %u file%s, and %u folder%s"MEOR, module,
-               lpd,
+               pdn,
                filcount,
                ((filcount == 1) ? "" : "s"),
                dircount,
@@ -386,12 +395,12 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
             prt(lpVerb);
         }
     } else {
-        if( VERB9 ) {
-           sprintf( lpVerb, "%s: v9: opendir '%s' FAILED!"PRTTERM, module, lpd );
+        if( VERB5 ) {
+           sprintf( lpVerb, "%s: v5: opendir(%s) FAILED!"PRTTERM, module, pdn );
             prt( lpVerb );
         }
     }
-    MFREE(lpf); // toss the MEMORY
+    MFREE(pfn); // toss the MEMORY
 }
 
 // eof - Fa4Wild.c
