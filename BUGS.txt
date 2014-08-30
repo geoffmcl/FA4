@@ -1,6 +1,9 @@
 file: BUGS.txt - started 20140830, to list bug noted. and whne closed.
 
 =============================================================================================
+20140830: Commands 'fa4 "SIGHUP" -r /usr/include/.' and 'fa4 "SIGHUP" -r /usr/include' FAIL!
+
+=============================================================================================
 20140830: Output of 'rejected' count seems wrong!
 CLOSED:20140830: All due to unix shell expansion of the '*'...
 
