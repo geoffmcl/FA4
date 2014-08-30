@@ -5,7 +5,14 @@ FIX20140830: Have placed source in github repo, fixed and compiled in Ubuntu lin
 and one of those is dirent.h for DIR *pd = opendir("path"); sturct dirent *pde = readdir(pd); closedir(pd)
 BUT there is BUG in that directories are REPEATED, thus file searches are REPEATED.
 
-This all happens in process_wild()... What is the problem?
+Problem was in 3 services - Process_Recursive(), DoThisFile() and Find_Wilds() repeated the directory finds.
+Removed the first 2 service. No all file/directory search go through only Find_Wilds. It now does a check if not recursive
+and the file is valid, then only process that file, and returns. Else the 'file' component is marched the all found in 
+the current directory, and each directory found has this file component added, and a new search.
+
+All appears well. Still to compile and test in linux, but very positive.
+
+This does point out the need to add some unit testing to make sure there has been no other loss.
 
 =============================================================================================================
 FIX20120408 - Do NOT set g_bGotLOpt on -LL option - no change in version since not yet published

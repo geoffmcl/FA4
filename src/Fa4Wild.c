@@ -214,8 +214,49 @@ Free_PRE:
 //
 //  20140728 - Switched over to using DIR/dirent portable service
 //
+//  FIX20140830: BUG - Directories are repeated???
+//  1: Try really beefing up skipping '.' and '..' - NOPE, still get REPEATS
+//  Much as I hate it, maybe keep a list of directories processed, to at least flag a repeat
+//  AH HA: Simple! Process_Recursive( WS, char * lpwild ) is doing the SAME as Process_Wilds?????????
+//  Maybe just cancel the Process_Recursive() call in DoThisFile( WS, char * lpf, int bFlg )?
+//  OK, that fixed the problem... with command
+//  "opendir" -r -xChangeLog -xChangeLog.1 -x:doc -x:po -c -w F:\Projects\tar-1.28\* > tempout.txt 
+//  But what about the case -r F:\Projects\tar-1.28\Makefile.am - want to again search all directories
+//  Ok, that failed... Maybe this Process_Wild() should be used whether wild or NOT
+//  Now back to ok with test "quicktest" -r F:\Projects\tar-1.28\Makefile.am > tempout.txt 
+//
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void Process_Wilds( WS, char *lpwild )
+
+//  FIX20140830: BUG - Directories are repeated???
+#ifdef ADD_DIRS_DONE_DBG
+static LIST_ENTRY s_dir_list;
+static int done_init = 0;
+
+int is_a_repeat_dir( char *dir )
+{
+    PLE ph = &s_dir_list;
+    PLE pn;
+    PMWL pwl;
+    if (!done_init) {
+        InitLList(ph);
+        done_init = 1;
+    }
+    Traverse_List(ph,pn) {
+        pwl = (PMWL)pn;
+        if (strcmp(dir,pwl->wl_cName) == 0) {
+            return 1;
+        }
+    }
+    pwl = (PMWL)MALLOC(LPTR, sizeof(MWL));
+    if (pwl) {
+        strcpy( &pwl->wl_cName[0], dir );
+        InsertTailList( &s_dir_list, (PLE)pwl );
+    }
+    return 0;
+}
+#endif // #ifdef ADD_DIRS_DONE_DBG
+
+void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now does ALL files/dirs
 {
     char *lpd, *lpf, *lpfil;
     uint64_t ul1;
@@ -223,6 +264,22 @@ void Process_Wilds( WS, char *lpwild )
     // LOCAL STATS - just for this directory
     uint32_t dircount = 0;
     uint32_t filcount = 0;
+    if( !gfRecursive && IsValidFile(lpwild) ) {
+        // NOT recursive, and found just the single file
+        ul1 = get_last_file_size64();
+        strcpy(glpActive,lpwild);   // set as active
+        g_dwFoundFileCnt++;
+        if( VERB9 ) {
+            sprintf( lpVerb, "%s: v9: Checking %s ..."PRTTERM, module, lpwild );
+            prt( lpVerb );
+        }
+        g_ulTotalBytes += ul1;
+        gfDoneFile = FALSE;		// reset DONE FILE name
+        // Process a FILE, after MAPPING, for the FIND STRING(s)
+	    Find_In_File( pWS );
+        return; // found and done a SINGLE file
+    }
+
  	lpf = (char *)MALLOC( LPTR, (2*(MAX_PATH+32)) ); // FIX20050212 - fix -r switch
     CHKMEM(lpf);
     lpd = &lpf[(MAX_PATH+32)];
@@ -231,6 +288,14 @@ void Process_Wilds( WS, char *lpwild )
     if (*lpd == 0) {
         strcpy(lpd,"." PATH_SEP);
     }
+
+#ifdef ADD_DIRS_DONE_DBG
+    if (is_a_repeat_dir(lpd)) {
+       sprintf( lpVerb, "%s: A repeated direcotory dir %s, while seeking  matching [%s]"MEOR, module, lpd, lpf );
+        prt(lpVerb);
+        return;
+    }
+#endif // #ifdef ADD_DIRS_DONE_DBG
 
 	lpfil = glpActive;	// Get the BUFFER for the ACTIVE file/dir name
     if( VERB9 ) {
@@ -241,6 +306,19 @@ void Process_Wilds( WS, char *lpwild )
     if(dp) { 
         struct dirent *d = readdir(dp);
         while (d) {  // got a FIND FIRST
+            //  FIX20140830: Make really SURE '.' and '..' never get through!
+            char * lpn = d->d_name;
+            if (lpn[0] == '.') {
+                if (lpn[1] == 0) {
+                    d = readdir(dp);
+                    continue;
+                } else if (lpn[1] == '.') {
+                    if (lpn[2] == 0) {
+                        d = readdir(dp);
+                        continue;
+                    }
+                }
+            }
             strcpy( lpfil, lpd );
             strcat( lpfil, d->d_name );
             if (IsValidFile(lpfil)) {
@@ -270,7 +348,6 @@ void Process_Wilds( WS, char *lpwild )
                 }
             } else {
                 // is a DIRECTORY - forget DOT and DOUBLE DOT
-                char * lpn = d->d_name;
                 if( strcmp(lpn,".") && strcmp(lpn,"..") ) {
                     strcat(lpfil,PATH_SEP);
                     strcat(lpfil,lpf);
@@ -287,10 +364,10 @@ void Process_Wilds( WS, char *lpwild )
                                 prt( lpVerb );
                             }
                        } else {
-                           Process_Wilds( pWS, lpfil ); // process this as WILD
+                           Process_Wilds( pWS, lpfil ); // Process_Wilds calling itself
                        }
 #else // !#ifdef USE_EXCLUDE_LIST
-                       Process_Wilds( pWS, lprm ); // process this as WILD
+                       Process_Wilds( pWS, lprm );  // Process_Wilds calling itself - NO USE_EXCLUDE_LIST
 #endif // #ifdef USE_EXCLUDE_LIST y/n
 	                }
 #endif	// ADDRECUR

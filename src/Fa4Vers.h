@@ -14,17 +14,21 @@
 #define	_Fa4Vers_H
 // current version
 
+// FIX20140830: Fixed BUG - Directories were repeated! Abandonned Process_Recursive() and DoThisFile() services
+#define  PVERS    "V4.1.1"
+#define  PDATE    "2014 Aug 30"
+
 // FIX20140727 - Convert to a cmake project, in preparartion of a linux compile
-#define  PVERS    "V4.1.0"
-#define  PDATE    "2014 Jul 27"
+// PVERS    "V4.1.0"
+// PDATE    "2014 Jul 27"
 
 // FIX20120809 - Add output of formatted system message when open file FAILED
-// #define  PVERS    "V4.0.70"
-// #define  PDATE    "2012 Sep  9"
+// PVERS    "V4.0.70"
+// PDATE    "2012 Sep  9"
 
 // FIX20120516 - Accept file name MATCHED if REGEX says YES - NEW BEHAVIOUR!!!
 // FIX20120407 - Move to WIN7-PC, using MSVC10 - put all source together including pcre and utils
-//  PVERS    "V4.0.69"
+// PVERS    "V4.0.69"
 // PDATE    "2012 May 16"
 
 // FIX20111105 - An input of a 'directory', make it directory\*.*

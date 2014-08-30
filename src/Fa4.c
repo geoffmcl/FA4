@@ -200,7 +200,7 @@ void	ShowFail( WS, int i, PWIN32_FIND_DATA pfd );
 #endif // WIN32
 void	ShowZero( WS );
 void	ShowNoMap( WS );
-void	DoThisFile( WS, char * lpf, int bFlg );
+// void	DoThisFile( WS, char * lpf, int bFlg ); //FIX20140830: now abandonned
 int	IsEVLabel( char * lpv );
 int	IsFVLabel( char * lpv );
 int	IsEDirect( char * lpv );
@@ -4264,7 +4264,7 @@ typedef struct tagRECURSIVE {
 } RECURSIVE, * PRECURSIVE;
 
 ///////////////////////////////////////////////////////////////////////////////
-// FUNCTION   : Process_Recursive
+// FUNCTION   : Process_Recursive - FIX20140830: now abandonned
 // Return type: void 
 // Arguments  : WS
 //            : char * lpwild
@@ -4272,7 +4272,7 @@ typedef struct tagRECURSIVE {
 //              
 ///////////////////////////////////////////////////////////////////////////////
 #if (defined(WIN32) && defined(USE_WIN32_DATA))
-void	Process_Recursive( WS, char * lpwild )
+void	Process_Recursive( WS, char * lpwild ) // FIX20140830: now abandonned
 {
     char *lpd, *lpf, *lpmask, *lpfil, *lprm, *lpn;
 	HANDLE	        hFind;
@@ -4322,10 +4322,10 @@ void	Process_Recursive( WS, char * lpwild )
                if( InExcludeD( lpn ) ) {
                   g_dwDirsExcl++; // count another match to EXCLUDED
                } else {
-   					DoThisFile( pWS, lprm, TRUE );   // this MAY not be VALID
+   					DoThisFile( pWS, lprm, TRUE );   // if defined(USE_WIN32_DATA)
                }
 #else // !#ifdef USE_EXCLUDE_LIST
-					DoThisFile( pWS, lprm, TRUE );   // this MAY not be VALID
+					DoThisFile( pWS, lprm, TRUE );   // if defined(USE_WIN32_DATA)
 #endif // #ifdef USE_EXCLUDE_LIST y/n
                // but the call to here check that,
                // BUT more importantly handles the INTERATION into lower folders
@@ -4341,7 +4341,8 @@ void	Process_Recursive( WS, char * lpwild )
 
 #else // !WIN32
 
-void Process_Recursive( WS, char * lpwild )
+#if 0 // 000000000000000000000000000000000000000000000000
+void Process_Recursive( WS, char * lpwild )  // FIX20140830: now abandonned
 {
     char *lpd, *lpf, *lpmask, *lprm;
 	DIR *	        hDir;
@@ -4373,12 +4374,10 @@ void Process_Recursive( WS, char * lpwild )
                        g_dwDirsExcl++; // count another match to EXCLUDED
                    } else {
                        strcat(lprm, PATH_SEP "*");
-                       // DoThisFile( pWS, lprm, TRUE );   // this MAY not be VALID
-                       Process_Wilds( pWS, lprm ); // process this as WILD
+                       Process_Wilds( pWS, lprm ); // in Process_Recursive() - now abandonned
                    }
 #else // !#ifdef USE_EXCLUDE_LIST
-				   // DoThisFile( pWS, lprm, TRUE );   // this MAY not be VALID
-                   Process_Wilds( pWS, lprm ); // process this as WILD
+                   Process_Wilds( pWS, lprm ); //  // in Process_Recursive() - now abandonned
 #endif // #ifdef USE_EXCLUDE_LIST y/n
                     // but the call to here check that,
                     // BUT more importantly handles the INTERATION into lower folders
@@ -4390,6 +4389,7 @@ void Process_Recursive( WS, char * lpwild )
 	}
 	MFREE(prc);
 }
+#endif // 000000000000000000000000000000000000000000000000000
 
 #endif // WIN32 y/n
 
@@ -4411,14 +4411,13 @@ void  SetDOSNm( WS, char * lpf )
 }
 #endif // WIN32
 
+#if 0 // 0000000000000000000000000000000000000000000000000000000000000000000
 // ====================================================================
 //	void	DoThisFile( WS, char * lpf )
-//
 //	PURPOSE:
 //		Process a file or file mask (off the glpFileMem)
-//
 // ====================================================================
-void	DoThisFile( WS, char * lpf, int bFlg )
+void	DoThisFile( WS, char * lpf, int bFlg ) // FIX20140830: abandonned service
 {
     uint64_t ul1;
 	gfDoneFile = FALSE;		// reset DONE FILE name
@@ -4428,7 +4427,7 @@ void	DoThisFile( WS, char * lpf, int bFlg )
             sprintf( lpVerb, "v9: Processing WILD: %s"PRTTERM, lpf );
             prt( lpVerb );
         }
-		Process_Wilds( pWS, lpf );
+		Process_Wilds( pWS, lpf ); // in DoThisFile() - now abandonned
 	}
 	else
 	{
@@ -4448,7 +4447,7 @@ void	DoThisFile( WS, char * lpf, int bFlg )
                     sprintf( lpVerb, "v9: Processing WILD: %s adding *.*"PRTTERM, lpf );
                     prt( lpVerb );
                 }
-		        Process_Wilds( pWS, glpActive ); // process this as WILD
+		        Process_Wilds( pWS, glpActive ); // in DoThisFile() - now abandonned
             }
         }
         else
@@ -4473,13 +4472,14 @@ void	DoThisFile( WS, char * lpf, int bFlg )
         }
 	}
 
-#ifdef	ADDRECUR
-	if( gfRecursive )
-	{
-		Process_Recursive( pWS, lpf );
-	}
-#endif	// ADDRECUR
+//#ifdef	ADDRECUR
+//	if( gfRecursive )
+//	{
+//		Process_Recursive( pWS, lpf ); // FIX20140830: In DoThisFile, now abandonned
+//	}
+//#endif	// ADDRECUR
 }
+#endif // 000000000000000000000000000000000000000000000000000000000000000000000
 
 void  Show_Openning( WS )
 {
@@ -4589,7 +4589,8 @@ void	Process_Finds( WS )
       PMFILE    pf = (PMFILE)pn;
       lpf = pf->cFile;
       len = strlen(lpf);
-		DoThisFile( pWS, lpf, FALSE );
+      gfDoneFile = FALSE;		// reset DONE FILE name
+      Process_Wilds( pWS, lpf ); // FIX20140830: was to DoThisFile( pWS, lpf, FALSE ); now abandonned
    }
    if( g_bCVSDate )
       Show_Entries( pWS );

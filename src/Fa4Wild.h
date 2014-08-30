@@ -13,7 +13,7 @@
 #ifndef  _Fa4Wild_h
 #define  _Fa4Wild_h
 
-extern void	Process_Wilds( WS, char * lpwild );
+extern void	Process_Wilds( WS, char * lpwild ); // FIX20140830: Slight miss naming - now does ALL files/dirs
 
 extern uint32_t g_dwFoundFileCnt;
 extern uint32_t g_dwFoundDirsCnt;
