@@ -1,0 +1,27 @@
+file: BUGS.txt - started 20140830, to list bug noted. and whne closed.
+
+=============================================================================================
+20140830: Output of 'rejected' count seems wrong!
+CLOSED:20140830: All due to unix shell expansion of the '*'...
+
+Invoked: fa4 "SIGHUP" -r /usr/include/*
+Reported: Processed 1981327 files, 129413 directories, rejected 1981083, done 244, 2,446,343 bytes, for 3 finds, in 3 files ...
+
+What is this 'rejected 1981083'??? The file mask is ALL, namely '*'! How can any file be 'rejected'? 
+Can NOT seems to repeat this error in Win-7? Except 'fa4 "WINNT_WIN7" F:\Projects\tar-1.28\* -r' does show
+eXcl=40:0, Again WHAT is eXcl??? Fa4.c(300) ", Excl=%d:%d", g_dwExclCnt, g_dwDirsExcl ), and
+Fa4.c(305) ", rejected %d", g_dFoundRejCnt ), and Fa4Wild.c(339): g_dwFoundRejCnt++;
+
+This is after an if ( MatchFiles2( lpf, d->d_name ) ) { ... } else the above increment.
+The lpf is set by SplitFN( lpd, lpf, lpwild ); Does this NOT work in unix? It seems to look for '/' or '\\' (and ':')
+
+Ok, the lpf is getting corrupted. Instead of '*' getting a file name like 'aio.h'???
+Added more debug code, and lowered rejection output to VERB5...
+
+*** UGH! ALL DUE TO SHELL COMMAND LINE EXPANSION!!!!!!!! ***
+
+Changed the unix command to './fa4 "SIGHUP" -r "/usr/include/*"' to avoid shell expansion, and correctly get -
+Processed 15601 files, 1019 directories, 131,922,323 bytes, for 6 finds, in 5 files ...
+
+=============================================================================================
+
