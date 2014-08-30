@@ -1,13 +1,23 @@
 Running list of 'fixes' --- started 16 November, 2005
 
+=============================================================================================================
+FIX20140830: Have placed source in github repo, fixed and compiled in Ubuntu linux. Where possible use 'portable' functions,
+and one of those is dirent.h for DIR *pd = opendir("path"); sturct dirent *pde = readdir(pd); closedir(pd)
+BUT there is BUG in that directories are REPEATED, thus file searches are REPEATED.
+
+This all happens in process_wild()... What is the problem?
+
+=============================================================================================================
 FIX20120408 - Do NOT set g_bGotLOpt on -LL option - no change in version since not yet published
 
+=============================================================================================================
 20120407 - Moved to WIN7-PC - Put libs\pcre and utils code all into here so NO external dependencies
 Fixed up the DSW/DSP build files before using MSVC10 to compile - all looks good
 FIX20120407 - Added -S to strip non-alphanumeric char from output of finds
 Also bump default -LL (line limit) from 80 to 96
 Added -NS to NOT show stats at end and -NF to NOT show the file name
 
+=============================================================================================================
 20080802: Suggestion: Do NOT output REPEATED same differences, unless requested,
 and/or have a switch to 'ignore' a certain difference
 Thus avoiding repeated simple differences like -
@@ -36,6 +46,7 @@ CODE: do {                                                                      
 Maybe, when the difference changes, output a COUNT of how many same-difference were NOT output
 
 
+=============================================================================================================
 // FIX20071006 - add -x:; to excluded CVS and SVN directories
 // and increased max default wrap to 90, in normally 99 char wide console
 
@@ -113,6 +124,7 @@ LOOKING GOOD!!!
 
 End FIX20051127
 
+=============================================================================================================
 // FIX20060315 - minor fix to KindofCompare
 
 It appears FIX20050304 was NOT completed ...
@@ -135,3 +147,6 @@ and g_ioHold is SET, it should ONLY be added to an OUT LIST ...
 Ok, have created a new module, Fa4Out.]c|h], where the output is
 put on a LIST, and only at the end of the processing of a particular
 file, the decision to OUTPUT the finds is done ...
+
+=============================================================================================================
+# EOF
