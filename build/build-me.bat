@@ -33,7 +33,23 @@
 @echo.
 @REM echo No install at this time...
 @REM goto END
+@if NOT EXIST Release\fa4.exe goto DNCHK
+@if NOT EXIST C:\MDOS\fa4.exe goto DNCHK
+@REM fc4 exit Errorlevel 1 if Different; 2 if ERROR and 3 if HELP shown, else 0.
+@fc4 -? >nul
+@if ERRORLEVEL 4 goto DNCHK
+@if ERRORLEVEL 3 goto DOCHK
+@goto DNCHK
+:DOCHK
+@fc4 -v0 -q -b Release\fa4.exe C:\MDOS\fa4.exe
+@if ERRORLEVEL 1 goto DNCHK
+@echo Installed C:\MDOS\fa4.exe EXACTLY SAME as Release\fa4.exe
+@echo NO INSTALL REQUIRED
+@echo.
+@goto END
 
+:DNCHK
+@echo.
 @echo Note install location %TMPINST%
 @echo *** CONTINUE with install? *** Only 'y' continues ***
 @echo.
