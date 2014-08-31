@@ -1520,6 +1520,29 @@ int	KillFile2( WS, LPLFSTR lpLF )
 	return flg;
 }
 
+// FIX20140831 - If it is directory/., make it directory\*.*
+// and if it is directory/, make it directory/*.*
+// If it is '.', make it ./*.*
+void add_wild_file(char *ps)
+{
+    size_t len = strlen(ps);
+    int c;
+    if (len) {
+        len--;  // examine last char
+        c = ps[len];
+        if (c == '.') {
+            if (len) {  // if there is more
+                int c = ps[len-1];  // get second last
+                if (IS_PATH_SEP_CHAR(c)) {
+                    ps[len-1] = 0;  // remove '\.' tail
+                }
+            }
+        } else if (IS_PATH_SEP_CHAR(c)) {
+            ps[len] = 0;
+        }
+    }
+    strcat(ps,PATH_SEP"*.*"); // FIX20140831: Use PATH_SEP for cross platform - is a DIRECTORY
+}
 
 void	Add2Files( WS, char * lps ) // PLE ph = &g_sFileList, count in g_nFileCnt
 {
@@ -1546,6 +1569,7 @@ void	Add2Files( WS, char * lps ) // PLE ph = &g_sFileList, count in g_nFileCnt
    if(ilen) {
 #ifdef   USEFINDLIST    // above change to FIND list = FIX20010703
        // FIX20111105 - An input of a 'directory', make it directory\*.*
+       // FIX20140831 - But if it is directory/., make it diectory\*.*
       PLE   ph = &g_sFileList;   // count in g_nFileCnt
       PLE   pn = (PLE)MALLOC( LPTR, (sizeof(MFILE) + strlen(cp)) + 8);
       if(pn)
@@ -1555,7 +1579,7 @@ void	Add2Files( WS, char * lps ) // PLE ph = &g_sFileList, count in g_nFileCnt
          pf->dwNum = 0;
          strcpy( ps, cp );
          if (is_file_or_directory(ps) == 2) {
-             strcat(ps,"\\*.*"); // is a DIRECTORY
+             add_wild_file(ps);
          }
          InsertTailList(ph,pn);
          g_nFileCnt++;           // count of files in LIST

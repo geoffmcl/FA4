@@ -44,6 +44,8 @@ typedef void * HFILE;
 
 #endif
 
+#define IS_PATH_SEP_CHAR(c) ( ( c == '\\' ) || ( c == '/' ) )
+
 extern	int	SplitFN( char * lpdir, char * lpfil, char * lpext );
 extern	int	MatchFiles( char * lp1, char * lp2 );
 extern	int	GotWild( char * lps );

@@ -42,7 +42,7 @@ int Check4ExcludedDir(void)
     for (i = 0; i < len; i++)
     {
         c = pdir[i];
-        if ((c == '\\')||(c == '/')) {
+        if (IS_PATH_SEP_CHAR(c)) {
             pdir[i] = 0;
             res = InExcludeD( pbgn );
             pdir[i] = c;

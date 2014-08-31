@@ -2,6 +2,13 @@ file: BUGS.txt - started 20140830, to list bug noted. and whne closed.
 
 =============================================================================================
 20140830: Commands 'fa4 "SIGHUP" -r /usr/include/.' and 'fa4 "SIGHUP" -r /usr/include' FAIL!
+FIX20140831: Found hopefully the last remaining case where add "\\" instead of using PATH_SEP
+in the Fa4Help.c - Add2Files( WS, char * lps ) service. At the same time add a new service
+void add_wild_file(char *ps)
+// If it is directory/., make it directory/*.*
+// If it is directory/,  make it directory/*.*
+// If it is '.',         make it ./*.*
+
 
 =============================================================================================
 20140830: Output of 'rejected' count seems wrong!

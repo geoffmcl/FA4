@@ -855,74 +855,6 @@ void	AddDateTime2( char * lpb,		// Destination buffer
 }
 #endif // WIN32
 
-#ifdef	FA4DBG
-//		PutThous( (lpb + strlen( lpb )),
-//			iSizLen,
-//			pfd->nFileSizeLow );
-#else
-
-#ifdef	USELOC4
-void	PutThous( char * lpb, int iMax, uint32_t dwszl )
-{
-//			iSizLen,
-//			pfd->nFileSizeLow );
-	if( lpb )
-	{
-		sprintf( EndBuf(lpb), "%d", dwszl );
-	}
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-// FUNCTION   : ShortName
-// Return type: char * 
-// Arguments  : char * lps
-//            : char * lpd
-//            : int siz
-// Description: Reduce the given line (lps) to the passed size (siz)
-//              return result in destination (lpd),
-// returning the destination pointer.
-///////////////////////////////////////////////////////////////////////////////
-char *	ShortName( char * lps, char * lpd, int siz )
-{
-	int		i, i2, i3, k, j;
-
-	k = 0;
-	if( (siz > 10) &&
-		((i = strlen( lps )) > (siz+3) ) )
-	{
-		i2 = (siz-1) / 2;
-		i3 = i2 + (i - (i2 * 2));
-		for( j = 0; j < i; j++ )
-		{
-			if( j < i2 )
-			{
-				lpd[k++] = lps[j];
-			}
-			else if( j == i2 )
-			{
-				lpd[k++] = '.';
-				lpd[k++] = '.';
-				lpd[k++] = '.';
-			}
-			else if( j > i3 )
-			{
-				lpd[k++] = lps[j];
-			}
-		}
-		lpd[k] = 0;
-	}
-	else
-	{
-		strcpy( lpd, lps );
-	}
-	return	lpd;
-}
-
-#endif	/* USELOC4 */
-#endif	/* FA4DBG y/n */
-
-
 #ifdef WIN32
 ///////////////////////////////////////////////////////////////
 
@@ -1503,7 +1435,7 @@ int	FixDir( WS,
 		for( j = 0; j < i; j++ )
 		{
 			c = lpd[j];
-			if( ( c == ':' ) || ( c == '/' ) || ( c == '\\' ) )
+			if( ( c == ':' ) || IS_PATH_SEP_CHAR(c) )
 			{
 				k = 0;	// Start accumulation again
 			}

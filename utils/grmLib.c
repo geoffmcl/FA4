@@ -648,7 +648,9 @@ int CreateDiagFile( void )
     if (!VLD) {
         fprintf(stderr,"\nWARNING: FAILED to open diag file '%s'!\n", szDTxt);
     } else {
+#ifdef ADD_DIAG_DEBUG
         fprintf(stderr,"open diag file '%s'\n", szDTxt);
+#endif // ADD_DIAG_DEBUG
         iret = 1;
     }
     return iret;

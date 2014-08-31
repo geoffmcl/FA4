@@ -101,12 +101,13 @@ void setdospath( char * pathname )
    size_t i;
    for( i = 0; i < len; i++ )
    {
-      if(pathname[i] == '/')
-         pathname[i] = '\\';
+      if(pathname[i] == '/') {
+         pathname[i] = '\\'; // in setdospath(), so for sure use DOS path sep
+      }
    }
 }
 
-int gotwildchar( char * filename )
+int regex_gotwildchar( char * filename )
 {
    int   iswild = 0;
    size_t len = strlen(filename);
@@ -121,15 +122,15 @@ int gotwildchar( char * filename )
    return iswild;
 }
 
-int iswild( char * filename )
+int regex_iswild( char * filename )
 {
-   int   iswild = gotwildchar(filename);
+   int   iswild = regex_gotwildchar(filename);
    got_wild_fn = 0;
    if(iswild) {
       char * r;
       strcpy(temppath,filename);
       setdospath(temppath);
-      r = strrchr( temppath, '\\' );
+      r = strrchr( temppath, '\\' );    // done after sedospath() so only need search for '\' here
       if(r) {
          *r = 0;
          strcpy(wildpath, temppath);
@@ -139,7 +140,7 @@ int iswild( char * filename )
          strcpy(wildpath,".");
          strcpy(wildname, filename);
       }
-      iswild = gotwildchar(wildname);
+      iswild = regex_gotwildchar(wildname);
       if(iswild) {
          wildtoregex( wildname );   // CONVERT TO REGEX
       }
@@ -153,8 +154,11 @@ static int _s_iOnly_Once = 0;
 int	MatchFiles2( char * lp1, char * lp2 )
 {
    int  bRet = MatchFiles( lp1, lp2 );
-#ifdef   ADD_REGEX
-   if( iswild( lp1 ) ) {
+
+#if (defined(ADD_REGEX) && defined(ADD_REGEX_FILE_MATCH))
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// 20140831: This has served its purpose to test my MatchFiles(f1,f2) service - can now be turned off
+   if( regex_iswild( lp1 ) ) {
       char * error = 0;
       int errptr = 0;
       int res;
@@ -197,10 +201,11 @@ Free_PRE:
          pcre_free(pre);
       }
    }
-#endif   // ADD_REGEX
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+#endif   // #if (defined(ADD_REGEX) && defined(ADD_REGEX_FILE_MATCH))
+
    return bRet;
 }
-
 
 //#define CHKMEM(a) if( !a ) { prt("C:ERROR: MEMORY FAILED!"MEOR ); exit(-1); }
 //uint32_t g_dwFoundFileCnt = 0;
@@ -283,10 +288,6 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
  	pfn = (char *)MALLOC( LPTR, (2*(MAX_PATH+32)) ); // FIX20050212 - fix -r switch
     CHKMEM(pfn);
     pdn = &pfn[(MAX_PATH+32)];
-    if (VERB9) {
-        sprintf(lpVerb, "Allocated pfn=%p and pdn=%p\n", pfn, pdn );
-        prt(lpVerb);
-    }
     *pfn = 0;
     *pdn = 0;
 	SplitFN( pdn, pfn, lpwild );
