@@ -37,8 +37,6 @@
 extern	void	oi( char * lps );
 extern	void	prt( char * lps );
 
-extern   int   MCDECL sprt( char * lpf, ... );
-
 extern	void	PutThous( char * lpb, int len, uint32_t size );
 extern	char *	ShortName( char * lps, char * lpd, int siz );
 

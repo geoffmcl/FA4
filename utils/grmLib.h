@@ -66,6 +66,7 @@ extern	int	SetDiagFile( char * lpf );
 extern	HANDLE CreateUserFile( char * lpf );
 extern	void SetUserHandle( HANDLE hf );
 extern	void CloseUserFile( HANDLE hf );
+extern  char *GetDiagFile();
 
 #define NOT_VALID 0
 #define VALID_DIR 1

@@ -194,11 +194,6 @@ int main( int argc, char **argp )
 {
 	int	iret;
     g_ProgramName = argp[0];
-//    pfile2();
-//    outvals();
-#ifdef	NDEBUG
-	DisableDiagFile();
-#endif	/* NDEBUG = NO DEBUG */
 	iret = JMP_main( argc, argp );
 	return iRetVal;
 //	return iret;

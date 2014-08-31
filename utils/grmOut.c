@@ -15,20 +15,14 @@
 #endif // WIN32
 #include	"grmOut.h"
 
-#ifndef	NDEBUG
+// FIX20140831: Make diag log file PERMANENT
 #define		ADDDIAGT
-#else
-#undef		ADDDIAGT
-#endif	/* NDEBUG y/n */
 
 //#define		MXIO		256
 #define		MXIO		1024
 #define		MXSTG		32		// In PutThous( )
 
 #ifdef	ADDDIAGT
-#ifdef WIN32
-#pragma message( "NOTE: Diagnotic text is written to TEMPDIAG.TXT" )
-#endif // WIN32
 extern	void	WriteDiagFile( char * lps );
 #endif	// ADDDIAGT
 
@@ -57,7 +51,7 @@ char _s_goutbuf[MXIO + 4];
 // fails, then we are being redirected!!
 
 // General Services
-void	oi( char * lps )
+void	oi( char * lps )    // do output - hOut(stdout), hUserOut if valid, WriteDiagFile(lps)
 {
 	int		i;
 	uint32_t	dw;
@@ -180,7 +174,7 @@ void	prt( char * lps )
 			if( k >= MXIO )
 			{
 				lpb[k] = 0;
-				oi( lpb );
+				oi( lpb );  // reached MXIO
 				k = 0;
 			}
 		}	// for length of string
@@ -195,47 +189,9 @@ void	prt( char * lps )
 				lpb[k] = 0;
 			}
 			lpb[k] = 0;
-			oi( lpb );
+			oi( lpb );  // out remainder
 		}
 	}
-}
-
-#ifdef   ADDSPRTF2
-
-int  MCDECL sprtf( char * lpf, ... )
-{
-   static char _s_sprtfbuf[1024];
-   char *   lpb = &_s_sprtfbuf[0];
-   int   i;
-   va_list arglist;
-   va_start(arglist, lpf);
-   i = vsprintf( lpb, lpf, arglist );
-   va_end(arglist);
-   prt(lpb);
-   return i;
-}
-
-
-#endif   // ADDSPRTF2
-
-/* =====================================================
-    int sprt( char * ptr, ... )
-   ===================================================== */
-int MCDECL sprt( char * lpf, ... )
-{
-   static char _s_sprtfbuf[1024];
-   char *      lpb = &_s_sprtfbuf[0];
-   int         i;
-   va_list     arg_ptr;
-
-   va_start(arg_ptr, lpf);
-   i = vsprintf( lpb, lpf, arg_ptr );
-   va_end(arg_ptr);
-
-   if(i)
-      oi(lpb);
-
-   return i;
 }
 
 void	dout( char * lps )

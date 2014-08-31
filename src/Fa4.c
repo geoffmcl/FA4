@@ -760,22 +760,6 @@ void	AddDateTime( char * lpb,		// Destination buffer
 		mth = DFMonth( FatDate );
 		dy = DFDay( FatDate );
 
-#ifdef	ADDDIAG2
-		sprintf( &DiagBuf[0], "LWT=%08x:%08x FT=%04x FD=%04x H=%u M=%u S=%u Y=%u M=%u D=%u"PRTTERM,
-			pfd->ftLastWriteTime.dwHighDateTime,
-			pfd->ftLastWriteTime.dwLowDateTime,
-			(FatTime & 0xffff),
-			(FatDate & 0xffff),
-			(hr & 0xffff),
-			(min & 0xffff),
-			(sec & 0xffff),
-			(yr & 0xffff),
-			(mth & 0xffff),
-			(dy & 0xffff) );
-		oi( &DiagBuf[0] );
-		DiagBuf[0] = 0;
-#endif	// ADDDIAG2
-
 		// Add DATE
       if( yr >= 100 ) { // FIX20050201 - 2000 bug
          int cents = yr / 100;
@@ -1429,40 +1413,6 @@ int	Decode( WS,
 					wFatTime,	// 16-bit MS-DOS time
 					&fd.ftLastWriteTime ) )	) // pointer to buffer for 64-bit file time
 			{
-#ifdef	ADDDIAG2
-		sprintf( &DiagBuf[0], "2WT=%08x:%08x FT=%04x FD=%04x H=%u M=%u S=%u Y=%u M=%u D=%u"PRTTERM,
-			fd.ftLastWriteTime.dwHighDateTime,
-			fd.ftLastWriteTime.dwLowDateTime,
-			(wFatTime & 0xffff),
-			(wFatDate & 0xffff),
-			(hr & 0xffff),
-			(min & 0xffff),
-			(sec & 0xffff),
-			(yr & 0xffff),
-			(mth & 0xffff),
-			(day & 0xffff) );
-		oi( &DiagBuf[0] );
-		DiagBuf[0] = 0;
-		whr = DFHour( wFatTime );
-		wmin = DFMins( wFatTime );
-		wsec = DFSecs( wFatTime );
-		wyr = DFYear( wFatDate );
-		wmth = DFMonth( wFatDate );
-		wdy = DFDay( wFatDate );
-		sprintf( &DiagBuf[0], "MWT=%08x:%08x FT=%04x FD=%04x H=%u M=%u S=%u Y=%u M=%u D=%u"PRTTERM,
-			fd.ftLastWriteTime.dwHighDateTime,
-			fd.ftLastWriteTime.dwLowDateTime,
-			(wFatTime & 0xffff),
-			(wFatDate & 0xffff),
-			(whr & 0xffff),
-			(wmin & 0xffff),
-			(wsec & 0xffff),
-			(wyr & 0xffff),
-			(wmth & 0xffff),
-			(wdy & 0xffff) );
-		oi( &DiagBuf[0] );
-		DiagBuf[0] = 0;
-#endif	// ADDDIAG2
 				fd.ftCreationTime.dwLowDateTime = fd.ftLastWriteTime.dwLowDateTime; 
 				fd.ftCreationTime.dwHighDateTime = fd.ftLastWriteTime.dwHighDateTime; 
 				fd.ftLastAccessTime.dwLowDateTime = fd.ftLastWriteTime.dwLowDateTime; 
@@ -1690,7 +1640,6 @@ int	GetDir( WS,
 	{
 		sprintf( lpVerb, "Find using [%s]"PRTTERM,
 			pDir );
-//		oi( lpVerb );
 		prt( lpVerb );
 	}
 	StoreDir( pWS, pDir, strlen( pDir ), lptf, pTmp, pCnt );
@@ -1825,6 +1774,7 @@ void  MakeDiagFile( void )
 #else
     strcpy(lpf,"/tmp/tempfa4.log");
 #endif
+    // fprintf(stderr,"Setting diag file to '%s'\n", lpf );
 	SetDiagFile(lpf);
 }
 
@@ -1881,8 +1831,7 @@ LPWORKSTR	DoSetup( void )
 	gdwBgn = GetTickCount();
 	// set the diag file name
 
-	//SetDiagFile( "TEMPFA4.TXT" );
-   MakeDiagFile();
+    MakeDiagFile();
 
 	iMainRet = 0;	// Assume NO FINDS
 	iCritErr = 0;	// and NO critical errors
@@ -4751,7 +4700,6 @@ void prt_out_tail( void )
    prt(bp);
 }
 
-
 void	ShowSwitches( WS )
 {
 //	int		i;
@@ -5056,7 +5004,6 @@ void	PrtErr( WS, uint32_t Err )
 	if( lperr )
 	{
 		OutCmds( pWS );
-//		oi( lperr );
 		prt( lperr );
 	}
 }
@@ -5196,6 +5143,7 @@ void	PutActiveStg( WS, uint32_t dwMs )
 //			"ErrorLevel=%d",
 //			( iCritErr ? iCritErr : gdwFinds ) );
 //#endif
+        sprintf(EndBuf(lpV),", log '%s'", GetDiagFile());
 
 		strcat( lpV, ""PRTTERM );
 
@@ -5866,134 +5814,6 @@ int	HasStg( WS, char * pn, char * ps )
 
 	return i;
 }
-
-#ifndef	FA4DBG
-
-#ifdef	USELOC4
-
-// provide our own CONSOLE I/O
-#ifndef	MXIO
-#define	MXIO		256
-#endif	/* MXIO */
-
-static HANDLE	hOut = 0;
-static	int	gbCheckCrLf = 1;
-
-// extracted from FixF32 prohect
-// HOW TO DETECT if the CONSOLE stdout is REDIRECTED to a file?
-// ============= fprintf() fopen() ????
-// Found a way! Presently using handle to get mode. If this get
-// fails, then we are being redirected!!
-void	oi( char * lps )
-{
-	static int fOnce = 1;
-	int		i;
-	uint32_t	dw;
-//#ifndef	FC4W
-	if( fOnce )
-	{
-		hOut = GetStdHandle( STD_OUTPUT_HANDLE );
-      //ghErrOut = GetStdHandle( STD_ERROR_HANDLE  );   // error out
-      if( VFH(hOut) )
-      {
-         uint32_t dwm;
-         if( !GetConsoleMode( hOut, &dwm ) )
-            g_bRedirON = TRUE;
-      }
-		fOnce = FALSE;
-	}
-//#endif	/* !FC4W */
-	if( ( lps                ) &&
-		( i = strlen( lps ) ) )
-	{
-//#ifndef	FC4W
-//		WriteAFile( hOut, lps, i );
-		if( VH(hOut) )
-		{
-			WriteFile( hOut, lps, i, &dw, NULL );
-		}
-//#endif	/* !FC4W */
-
-//		if( VH(hUserOut) )
-//			WriteFile( hUserOut, lps, i, &dw, NULL );
-
-//#ifdef	ADDDIAGT
-		// write diagnostic text file
-//		WriteDiagFile( lps );
-		// ==========================
-//#endif	// ADDDIAGT
-
-	}
-}
-
-
-void	prt( char * lps )
-{
-	char	buf[MXIO + 8];
-	char *	lpb;
-	int		i, j, k;
-	char	c, d;
-
-	if( lps && ( i = strlen( lps ) ) )
-	{
-		k = 0;
-		d = 0;
-		lpb = &buf[0];
-		for( j = 0; j < i; j++ )
-		{
-			c = lps[j];
-			if( c == 0x0d )
-			{
-				if( (j+1) < i )
-				{
-					if( lps[j+1] != 0x0a )
-					{
-						lpb[k++] = c;
-						c = 0x0a;
-					}
-				}
-				else
-				{
-					lpb[k++] = c;
-					c = 0x0a;
-				}
-			}
-			else if( c == 0x0a )
-			{
-				if( d != 0x0d )
-				{
-					lpb[k++] = 0x0d;
-				}
-			}
-			lpb[k++] = c;
-			d = c;
-			if( k >= MXIO )
-			{
-				lpb[k] = 0;
-				oi( lpb );
-				k = 0;
-			}
-		}	// for length of string
-		if( k )
-		{
-			if( ( gbCheckCrLf ) &&
-				( d != 0x0a ) )
-			{
-				// add Cr/Lf pair
-				lpb[k++] = 0x0d;
-				lpb[k++] = 0x0a;
-				lpb[k] = 0;
-			}
-			lpb[k] = 0;
-			oi( lpb );
-		}
-	}
-}
-
-#endif	/* USELOC4 */
-
-#endif	/* !FA4DBG */
-
 
 
 // eof - Fa4.c

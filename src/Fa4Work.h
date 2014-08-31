@@ -592,7 +592,7 @@ extern   LPWORKSTR	lpWS;
 //               {
 //                  FixAlternate(pWS,&fd);
 //                  strcat(gszDOSPth,&fd.cAlternateFileName[0]);
-//                  strcat(gszDOSPth,"\\"); // add in the PATH
+//                  strcat(gszDOSPth,PATH_SEP); // add in the PATH
 // so the SIMPLE fix seems to be do not KILL gszDOSPth
 // UNLESS THERE IS A DIFFERENCE
 #define  gszDOSLast     W.ws_szDOSLast

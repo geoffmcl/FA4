@@ -29,18 +29,8 @@
 #define		NOGMUTIL
 #endif	/* FC4W */
 
-// SETDIAG - Will be OFF if NDEBUG
-// UNLESS over-ridden with DBGSET defined!
-#ifdef   NDEBUG
-#  ifdef DBGSET
+// FIX20140831: Make diag log file PERMANENT
 #define  SETDIAG
-#  else  // !DBGSET
-#undef   SETDIAG
-#  endif // DBGSET y/n
-#else // !NDEBUG
-#define  SETDIAG
-#endif   // NDEBUG y/n
-//extern	void	chkchk(void);
 
 #ifndef	NOGMFILETYPE
 // =================================
@@ -641,23 +631,27 @@ void	CloseUserFile( HANDLE hf )
 
 #define		VLD		( hDFile && ( hDFile != HFILE_ERROR ) )
 
-void	CreateDiagFile( void )
+int CreateDiagFile( void )
 {
-#ifdef WIN32
+    int iret = 0;   // set FAILED
+#if (defined(WIN32) && defined(USE_WIN32_API))
 	OFSTRUCT	of;
 	hDFile = OpenFile( &szDTxt[0], &of, OF_CREATE | OF_READWRITE );
 #else
     FILE *fp = fopen( szDTxt, "w" );
     if (fp) {
-        hDFile = fp;
+        hDFile = (HFILE)fp;
     } else {
-        hDFile = INVALID_HANDLE_VALUE;
+        hDFile = (HFILE)INVALID_HANDLE_VALUE;
     }
 #endif
     if (!VLD) {
         fprintf(stderr,"\nWARNING: FAILED to open diag file '%s'!\n", szDTxt);
+    } else {
+        fprintf(stderr,"open diag file '%s'\n", szDTxt);
+        iret = 1;
     }
-
+    return iret;
 }
 
 
@@ -665,10 +659,10 @@ void	CloseDiagFile( void )
 {
 	if( VLD )
 	{
-#ifdef WIN32
+#if (defined(WIN32) && defined(USE_WIN32_API))
 		_lclose( hDFile );
 #else
-        fclose( hDFile );
+        fclose( (FILE *)hDFile );
 #endif
 	}
 	hDFile = 0;
@@ -692,19 +686,23 @@ void	WriteDiagFile( char * lps )
 		}
 		if( VLD )
 		{
-#ifdef WIN32
+#if (defined(WIN32) && defined(USE_WIN32_API))
 			wtn = _lwrite( hDFile, lps, i );
 #else
-            wtn = fwrite(lps,1,i,hDFile);
+            wtn = fwrite(lps,1,i,(FILE *)hDFile);
 #endif
 			if( wtn != i )
 			{
 				CloseDiagFile();
 				hDFile = HFILE_ERROR;
+                fprintf(stderr,"Warning: write diag file '%s' FAILED! req %d, got %d. CLOSED\n", szDTxt, i, wtn);
+
 			}
 		}
 	}
 }
+
+char *GetDiagFile() { return szDTxt; } 
 
 int	SetDiagFile( char * lpf )
 {
@@ -730,15 +728,6 @@ int	SetDiagFile( char * lpf )
 
 		strcpy( &szDTxt[0], lpf );
 		CreateDiagFile();
-#ifdef USE_DT4_MODULE
-		strcpy( lpb, "File: " );
-		WriteDiagFile( lpb );
-		WriteDiagFile( lpf );
-		sprintf( lpb,
-			" of %s\r\n",
-			GetDT4( 0 ) );
-		WriteDiagFile( lpb );
-#endif // USE_DT4_MODULE
 		if( VLD )
 			flg = TRUE;
 	}
@@ -763,9 +752,9 @@ void	EnableDiagFile( void )
 		hDFile = 0;
 }
 
+#endif // #ifndef	GMALTOUT
 // End - Diagnostic File Output
 // ***************************************************
-#endif		/* !GMALTOUT */
 
 // ========================================================
 // Place a FLOATING POINT Conversion to ASCII into a
