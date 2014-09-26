@@ -1,0 +1,11 @@
+file: TODO.txt - started 20140901
+List of possible features to add
+
+============================================================
+*: Exclude file list should allow wild cards, like -x*.bak
+
+============================================================
+
+# eof
+
+
