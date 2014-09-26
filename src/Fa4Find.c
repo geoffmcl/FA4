@@ -375,6 +375,7 @@ void  ShowFLines( PLE ph )  // = &g_sLines;
 // #endif   // #ifdef   USEFINDLIST // = PVERS "V4.0.16" // FIX20010703 - order FIND strings
 // #ifdef   USEFINDLIST    // = FIX20010703
 void Find_Skip( WS, uint32_t dwfs, char * lpc, char c, uint32_t flen, char * lpd, int fBin );
+void Find_Skip_Perl( WS, uint32_t dwfs, char * lpc, char c, uint32_t flen, char * lpd, int fBin );
 
 uint32_t g_dwMaxFnds = 0;
 uint32_t g_dwFndFlg;
@@ -807,6 +808,9 @@ void	Find_In_Gen( WS, char * lpInF )
       // FIX20010413 -I+ = Skip C/C++ comments in g_bIgComm
       if( bIgC ) {
          Find_Skip( pWS, dwfs, lpc, firstchar, flen, lpd, fBin );
+      } else if (g_bIgPComm) {
+          // FIX20140926: Add new switch -IP to inhibit finds in Perl comments
+          Find_Skip_Perl( pWS, dwfs, lpc, firstchar, flen, lpd, fBin );
       } else if( doregex ) {
          // process the buffer, line by line ...
          int   res;
@@ -1152,6 +1156,75 @@ void Find_Skip( WS, uint32_t dwfs, char * lpc, char c, uint32_t flen, char * lpd
    		}
 
 
+}
+
+// -IP = Skip Perl comments
+// FIX20140926: Add new switch -IP to inhibit finds in Perl comments
+void Find_Skip_Perl( WS, uint32_t dwfs, char * lpc, char c, uint32_t flen, char * lpd, int fBin )
+{
+    uint32_t dwi, is, dwl;
+    int inQuot = 0;
+    char  d, pd, qc;
+    pd = 0;
+    dwl = 0;
+    qc = 0;
+    for( dwi = 0; dwi < dwfs; dwi++ ) {
+        d = (*GetChr) ( &lpc[dwi] );  // call indirectly to GetChr (W.GETCHR) function
+        if (( d == '#' ) && !(pd == '\\') && !inQuot) {
+            // entered a single line comment field - go to end of line
+            dwi++;
+            for( ; dwi < dwfs; dwi++ ) {
+                d = lpc[dwi];
+                // FIX20010328 Fix for UNIX file searching
+                if( ( d == 0x0a ) || ( d == 0x0d ) )
+                    break;
+            }
+        } else if ((d == '"')||(d == '\'')) {
+            if (inQuot) {
+                if (d == qc) {
+                    inQuot = 0; // end of quoted text
+                }
+            } else {
+                qc = d;
+                inQuot = 1;
+            }
+        } else if( pd == 0x0a ) {
+            dwLastLn = dwLnBgn;
+            dwLnBgn  = dwi;
+        }
+
+        // if we match with character one
+        // ******************************
+        if( c == d ) {
+            // if GOT the first char, do a FULL COMPARE
+   			// if( FullComp( pWS, lpc, dwi, dwfs, lpd, flen, &dwl ) )
+            if( FullComp( pWS, lpc, dwi, dwfs, lpd, flen ) ) {
+                // output a line, passing offsets to previous lines as well
+                ShowLine( pWS, dwi, dwfs, &lpoff[0], &dwl );
+                if( fBin ) {
+                    // if BINARY, just bump past the FOUND
+                    dwi += g_dwCurFLen;
+                } else {
+                    // if TEXT, move to END OF LINE
+                    dwi++;
+                    for( ; dwi < dwfs; dwi++ ) {
+                        d = lpc[dwi];
+                        // FIX20010328 Fix for UNIX file searching
+                        if( ( d == 0x0a ) || ( d == 0x0d ) )
+                            break;
+                    }
+                }
+                g_dwFinds++;
+                dwFind1++;
+            }
+        }
+        // FIX20010328 Fix for UNIX file searching
+        if( d == 0x0a ) {
+            IncLine;	// dwl++;
+            inQuot = 0; // assume not in quotes any more
+        }
+        pd = d;
+    }
 }
 
 // *******************************************

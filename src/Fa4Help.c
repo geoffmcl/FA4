@@ -125,7 +125,7 @@ void	Usage( WS, uint32_t Err )
 //	prt( SWLEAD"-I        = Inhibit space / tab in finding text."PRTTERM );	// gfSpacey = TRUE
 //	prt( SWLEAD"-I:\"test\" = Inhibit finds with this text in line."PRTTERM );
 // "2001 April 13"	// FIX20010413 - add -I+ inhibit find in C/C++ comments
-	prt( SWLEAD"-I:\"text\"   = Inhibit finds with this text. (-I+ for C/C++ comments)"PRTTERM );
+	prt( SWLEAD"-I:\"text\"   = Inhibit finds with this text. (-I+ C/C++, -IP Perl comments)"PRTTERM );
 #endif	// ADDINHIB
 #ifdef   ADDLOPTION
    sprtf( SWLEAD"-L[W][nn|F] = Output Additional [Wnn=wrap at (def=%d)][nn=lines|F=Complete function]."PRTTERM, MX1LINE );
@@ -157,7 +157,7 @@ void	Usage( WS, uint32_t Err )
 //	prt( " V3++ Increasing verbality, up to -V9 Maximum Verbality. ie Very Noisy!"PRTTERM );
 // FIX20010413    // add a -w2 meaning MUST be space before and after WHOLE
 // and maybe -IC to inhibit finds in C/C++ comment lines
-	prt( "Notes:  Errorlevel gives the find count. -IC inhibit finds in C/C++ comments."PRTTERM );
+	prt( "Notes:  Errorlevel gives the find count. -IC inhibit case insensitive compare."PRTTERM );
 	prt( "Output: V0=None, V1=Files, V2=Finds & Files(def), up to V9=ALL ON."PRTTERM );
 // FIX20010319 -v4 adds date order of finds at end - See VERB4
    prt( "Note -V3 adds date and time after find file, and -V4 add a list at end."PRTTERM );
@@ -976,6 +976,7 @@ int	GetI( WS, char * pchrs, int len )
 // Description: case 'I': Get the INHIBIT string
 //              
 // "2001 April 13"	// FIX20010413 - add -I+ inhibit find in C/C++ comments
+// FIX20140926: Add new switch -IP to inhibit finds in Perl comments (begin with #)
 ///////////////////////////////////////////////////////////////////////////////
 // int	GetInhibs( WS, char * psw )
 int	Do_I_Switch( WS, char * psw )
@@ -1027,6 +1028,8 @@ int	Do_I_Switch( WS, char * psw )
 				gbCaseInhib = TRUE;
          else if( *cp == '+' )
             g_bIgComm = TRUE;
+         else if( toupper(*cp) == 'P' ) // FIX20140926: Add new switch -IP to inhibit finds in Perl comments
+            g_bIgPComm = TRUE;  //    GW.ws_bIgPComm  // ignore Perl comments
          else
             return flg;    // whatever this is it is NOT valid
 			cp++;

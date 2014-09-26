@@ -13,10 +13,13 @@
 #ifndef	_Fa4Vers_H
 #define	_Fa4Vers_H
 // current version
+// FIX20140926: Add new switch -IP to inhibit finds in Perl comments (begin with #)
+#define  PVERS    "V4.1.2"
+#define  PDATE    "2014 Sep 26"
 
 // FIX20140830: Fixed BUG - Directories were repeated! Abandonned Process_Recursive() and DoThisFile() services
-#define  PVERS    "V4.1.1"
-#define  PDATE    "2014 Aug 30"
+// PVERS    "V4.1.1"
+// PDATE    "2014 Aug 30"
 
 // FIX20140727 - Convert to a cmake project, in preparartion of a linux compile
 // PVERS    "V4.1.0"

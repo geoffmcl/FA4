@@ -217,7 +217,9 @@ typedef	struct tagWORKSTR {
 //				case 'I':
 	int	   ws_fInhibit;
 	int	   ws_bCaseInhib;
-   int     ws_bIgComm;    // g_bIgComm -I+ ignore C/C++ comments
+   int     ws_bIgComm;   // g_bIgComm -I+ ignore C/C++ comments
+   int     ws_bIgPComm;  // g_bIgPComm ignore Perl comments
+
 #ifdef	ADDINHIB
 	int		ws_iInhibCnt;
 	int		ws_iInhibSiz;
@@ -607,6 +609,8 @@ extern   LPWORKSTR	lpWS;
 // FIX20010413 - add -w2
 #define  g_fWhole2      GW.ws_fWhole2
 #define  g_bIgComm      GW.ws_bIgComm  // ignore C/C++ comments
+// FIX20140926: Add new switch -IP to inhibit finds in Perl comments
+#define  g_bIgPComm     GW.ws_bIgPComm  // ignore Perl comments
 
 // switch -F:M or -M[2] switch
 #define  g_bDoMake      GW.ws_bDoMake  // obey makefile continuation char on output
