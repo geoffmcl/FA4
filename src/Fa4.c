@@ -5223,16 +5223,25 @@ void  OutFindList( WS ) // *** DONE AT EXIT ***
    }
 }
 
-void  OutFailList( void )
+void  OutFailList( WS )
 {
    PLE ph = &g_sFailList;
    PLE pn;
    PMFILE pmf;
-   Traverse_List(ph, pn)
-   {
+   char *lps = lpVerb;
+   int count = 0;
+   Traverse_List(ph, pn) {
       pmf = (PMFILE)pn;
-      prt( pmf->cFile );
+      if (VERB3) {
+          prt( pmf->cFile );
+      }
+      count++;
    }
+   if (count && ! VERB3) {
+       sprintf(lps,"Have %d failures. Use -V3 to show list\n", count );
+       prt(lps);
+   }
+
 }
 
 // ALL should come here to exit
@@ -5243,7 +5252,7 @@ void	Pgm_Exit( WS )
 	{
       // FIX20010319 -v4 adds date order of finds at end
       if( VERB ) {
-         OutFailList();
+         OutFailList( pWS );
       }
       if( VERB4 ) {
          OutFindList( pWS );

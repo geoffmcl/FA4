@@ -13,9 +13,13 @@
 #ifndef	_Fa4Vers_H
 #define	_Fa4Vers_H
 // current version
+// FIX20141214 - Only show full 'failed' list is -V3 or higher
+#define  PVERS    "V4.1.3"
+#define  PDATE    "2014 Dec 14"
+
 // FIX20140926: Add new switch -IP to inhibit finds in Perl comments (begin with #)
-#define  PVERS    "V4.1.2"
-#define  PDATE    "2014 Sep 26"
+// PVERS    "V4.1.2"
+// PDATE    "2014 Sep 26"
 
 // FIX20140830: Fixed BUG - Directories were repeated! Abandonned Process_Recursive() and DoThisFile() services
 // PVERS    "V4.1.1"
