@@ -3849,7 +3849,7 @@ void	ShowFail( WS , int i )
    CHKMEM(pmf);
    strcpy( pmf->cFile, lpVerb );
    InsertTailList(ph,(PLE)pmf);
-	if( VERB ) {
+	if( VERB3 ) {
 		prterr( lpVerb );
 	} else {
 #ifdef	ADDDIAGT
