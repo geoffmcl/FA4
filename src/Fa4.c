@@ -4069,6 +4069,11 @@ int	GetFileMap( WS )
     glpMapView = addr;
 	gdwTotBytes += length;
     ghActFile = (HANDLE)fd;
+    g_bIsBinary2 = Is_Binary_File();
+    g_bIsBinary = FALSE;
+    if( g_fIgnoreBin )
+        g_bIsBinary = g_bIsBinary2;
+
     return 1;
 }
 
