@@ -37,6 +37,9 @@ if(WIN32 AND MSVC)
 else()
     #   what to add for gcc? Maybe
     set(WARNING_FLAGS "${WARNING_FLAGS} -Wno-unused-but-set-variable")
+    set(WARNING_FLAGS "${WARNING_FLAGS} -Wno-trigraphs")
+    set(WARNING_FLAGS "${WARNING_FLAGS} -Wno-unused-variable")
+    set(WARNING_FLAGS "${WARNING_FLAGS} -Wno-unused-value")
     list(APPEND add_LIBS m)
 endif()
 
