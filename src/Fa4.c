@@ -318,6 +318,14 @@ void Show_Found_Nums( void )
    nb = My_NiceNumber(nb);
    sprintf(EndBuf(lpVerb),", %s bytes", nb );
 
+   // FIX20150315 - add total lines processed
+   if (gdwTotLines) {
+       nb = GetNxtBuf();
+       sprintf(nb,"%u", gdwTotLines );
+       nb = My_NiceNumber(nb);
+       sprintf(EndBuf(lpVerb),", %s lines", nb );
+   }
+
    if( g_dwTotFinds ) {
       if(g_dwTotFinds == 1)
          strcat(lpVerb,", for 1 find");
