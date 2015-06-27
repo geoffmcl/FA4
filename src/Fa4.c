@@ -3329,23 +3329,35 @@ void	Move2Find( char * lpd, char * pFind )
 
 }
 
+#ifdef WIN32
+#define MSTRCMP strcmpi
+#else
+#define MSTRCMP strcmp
+#endif
+
+// FIX20150627 - Case "*.bak" and "file.txt.bak" FAILED to compare - now FIXED
+// Also add case-sensitive compare for unix
 int KindofCompare( char * lpex, char * lpfn )
 {
-   int	flg = FALSE;
-   if( strcmpi(lpex,lpfn) == 0 ) {
-      flg = TRUE;
-   } else {
-	   int		ii, jj;
-	   int      c, d;
-	   int      i = strlen( lpex );
-      int      j = strlen( lpfn );
-	   if( i && j ) {
-		   ii = jj = 0;
-		   while( i && j ) {
-			   c = toupper(lpex[ii]);
-			   d = toupper(lpfn[jj]);
-			   if( ( c == d ) ||
-				   ( c == '?' ) ) {
+    int flg = FALSE;
+    if( MSTRCMP(lpex,lpfn) == 0 ) {
+        flg = TRUE;
+    } else {
+        int ii, jj;
+        int c, d;
+        int i = strlen( lpex );
+        int j = strlen( lpfn );
+        if( i && j ) {
+            ii = jj = 0;
+            while( i && j ) {
+#ifdef WIN32
+                c = toupper(lpex[ii]);
+                d = toupper(lpfn[jj]);
+#else
+                c = lpex[ii];
+                d = lpfn[jj];
+#endif
+                if( ( c == d ) || ( c == '?' ) ) {
 				   // JUST GO TO NEXT char IN EACH
 				   ii++;
 				   jj++;
@@ -3357,73 +3369,87 @@ int KindofCompare( char * lpex, char * lpfn )
 					   break;	// not really required
 					   // since would exit the loop anyway.
 				   } else if( i == 0 ) {
-                  if(( j == 1 ) && ( lpfn[jj] == '*')) {
-					      flg = TRUE; // assume * is NONE or many
-					      break;	// not really required
-                  } else if( (i == 3) && (strcmp(&lpfn[jj],"*.*") == 0)) {
-                      // FIX20101026 - make file == file*.*
-                      flg = TRUE;
-                  }
-               } else if( j == 0 ) {
-                  if(( i == 1 ) && ( lpex[ii] == '*')) {
-					      flg = TRUE; // assume * is NONE or many
-					      break;	// not really required
-                  } else if( (i == 3) && (strcmp(&lpex[ii],"*.*") == 0)) {
-                      // FIX20101026 - make file == file*.*
-                      flg = TRUE;
-                  }
-               }
-
-			   } else if( c == '*' ) {
-				   if( i == 1 ) {
-					   // last char of EXCLUDE is WILD
-					   // that means it matches everything
-					   flg = TRUE;
-					   break;
-               } else {	// There are move chars in EXCLUDE
-					   while(( c == '*' ) &&
-							   ( i > 0    ) ) {
-						   ii++;
-						   i--;
-						   c = toupper(lpex[ii]);
-					   }
-					   if( c == '*' ) {
-						   // all WILD chars
-						   flg = TRUE;
-						   break;
-					   }
-					   while( j ) {
-						   if( c == d ) {
-							   // found this char in filename
-							   break;
-						   }
-						   jj++;
-						   j--;
-						   d = toupper(lpfn[jj]);
-					   }
-					   if( j == 0 ) {
-						   // ran OUT of chars in FILENAME
-						   // while looking for c
-						   // Special case of *.*
-						   if(( c == '.' ) &&
-							   ( i == 2   ) &&
-							   ( lpex[ii+1] == '*' ) ) {
-							   // This is a match between say
-							   // lpex = "temp*.*" and
-							   // lpf  = "temps
-							   flg = TRUE;
-							   break;
-						   }
-					   }
-				   }
-			   } else {
-				   // THEY ARE DIFFERENT
-				   break;
-			   }
-		   }
-	   }
-   }
-	return flg;
+                       if(( j == 1 ) && ( lpfn[jj] == '*')) {
+                           flg = TRUE; // assume * is NONE or many
+                           break;	// not really required
+                       } else if( (i == 3) && (strcmp(&lpfn[jj],"*.*") == 0)) {
+                           // FIX20101026 - make file == file*.*
+                           flg = TRUE;
+                       }
+                   } else if( j == 0 ) {
+                       if(( i == 1 ) && ( lpex[ii] == '*')) {
+                           flg = TRUE; // assume * is NONE or many
+                           break;	// not really required
+                       } else if( (i == 3) && (strcmp(&lpex[ii],"*.*") == 0)) {
+                           // FIX20101026 - make file == file*.*
+                           flg = TRUE;
+                       }
+                   }
+                } else if( c == '*' ) {
+                    if( i == 1 ) {
+                        // last char of EXCLUDE is WILD
+					    // that means it matches everything
+					    flg = TRUE;
+					    break;
+                    } else {	// There are more chars in EXCLUDE
+                        while(( c == '*' ) && ( i > 0 ) ) {
+                            ii++;
+						    i--;
+#ifdef WIN32
+                            c = toupper(lpex[ii]);
+#else
+                            c = lpex[ii];
+#endif
+					    }
+                        if( c == '*' ) {
+                            // all WILD chars
+                            flg = TRUE;
+						    break;
+					    }
+                        while( j ) {
+                            if( c == d ) {
+                                // found this char in filename
+                                // BUT this is only the FIRST - example "*.bak" and "file.txt.bak"
+                                if (KindofCompare(&lpex[ii],&lpfn[jj])) {
+                                    // if remainder compares, then out of here
+                                    flg = TRUE;
+                                    j = 0;
+                                    i = 0;
+                                    break;
+                                }
+                            }
+                            jj++;
+						    j--;
+#ifdef WIN32
+						    d = toupper(lpfn[jj]);
+#else
+						    d = lpfn[jj];
+#endif
+					    }
+                        if ( ( j == 0 ) && ( i == 0 ) ) {
+                            break;
+                        }
+					    if( j == 0 ) {
+                            // ran OUT of chars in FILENAME
+                            // while looking for c
+                            // Special case of *.*
+                            if(( c == '.' ) && ( i == 2   ) && ( lpex[ii+1] == '*' ) ) {
+                                // This is a match between say
+                                // lpex = "temp*.*" and
+                                // lpf  = "temps
+                                flg = TRUE;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    // THEY ARE DIFFERENT
+                    break;
+                }
+            }
+        }
+    }
+    return flg;
 }
 
 int	CompKind( WS, char * lpact, char * lpex, char * lpdir, char * lpfn )

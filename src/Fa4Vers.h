@@ -13,9 +13,14 @@
 #ifndef	_Fa4Vers_H
 #define	_Fa4Vers_H
 // current version
+
+// FIX20150627 - Case "*.bak" and "file.txt.bak" FAILED to compare - now FIXED
+#define  PVERS    "V4.1.5"
+#define  PDATE    "2015 Jun 27"
+
 // FIX20150315 - add total lines processed
-#define  PVERS    "V4.1.4"
-#define  PDATE    "2015 Mar 15"
+//  PVERS    "V4.1.4"
+//  PDATE    "2015 Mar 15"
 
 // FIX20141214 - Only show full 'failed' list is -V3 or higher
 // PVERS    "V4.1.3"

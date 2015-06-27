@@ -26,7 +26,7 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 4,0,0,20
- PRODUCTVERSION 4,1,4,0
+ PRODUCTVERSION 4,1,5,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -45,10 +45,10 @@ BEGIN
             VALUE "FileDescription", "FA4"
             VALUE "FileVersion", "4, 0, 0, 20"
             VALUE "InternalName", "FA4"
-            VALUE "LegalCopyright", "Copyright © 2000 - 2015++"
+            VALUE "LegalCopyright", "Copyright © Geoff R. McLane 2000 - 2015++"
             VALUE "OriginalFilename", "FA4.exe"
             VALUE "ProductName", "IR FA4"
-            VALUE "ProductVersion", "4.1.4.0"
+            VALUE "ProductVersion", "4.1.5.0"
         END
     END
     BLOCK "VarFileInfo"
