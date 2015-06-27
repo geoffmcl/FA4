@@ -360,12 +360,13 @@ void  ShowFLines( PLE ph )  // = &g_sLines;
    if(dwc) {
       Traverse_List(ph,pn) {
          pl = (PFLINE)pn;
-         if( pl->dwTyp == 0 )
+         if( pl->dwTyp == 0 ) {
              if( g_ioHold ) {
                  add2outlist( &pl->cLine[0] ); // add to out list only
              } else {
                  prt( &pl->cLine[0] );
              }
+         }
       }
       dwc = 0;
    }
