@@ -14,9 +14,13 @@
 #define	_Fa4Vers_H
 // current version
 
+// FIX20160702 - Add a -Q - Quiet - only output is the find lines
+#define  PVERS    "V4.1.6"
+#define  PDATE    "2016 Jul 02"
+
 // FIX20150627 - Case "*.bak" and "file.txt.bak" FAILED to compare - now FIXED
-#define  PVERS    "V4.1.5"
-#define  PDATE    "2015 Jun 27"
+// PVERS    "V4.1.5"
+// PDATE    "2015 Jun 27"
 
 // FIX20150315 - add total lines processed
 //  PVERS    "V4.1.4"

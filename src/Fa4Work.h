@@ -357,6 +357,7 @@ typedef	struct tagWORKSTR {
 	char	   ws_cDirBuf[264+MXOVR];        // gcDirBuf
     int        ws_bNoStats;                //	g_bNoStats // -NS = no output of stats at end
     int        ws_bNoFile;                //	g_bNoFile //  -NF = no output of file name
+    int        ws_fQuiet;          // gfQuiet // // FIX20160702 - Add a -Q - Quiet - only output is the find lines
 
 #ifdef USE_ALLOCATED_LINE_BUFFER
     char * ws_lpLineBuffer;     // glpLineBuf
@@ -713,6 +714,9 @@ extern   LPWORKSTR	lpWS;
 
 #define	g_bNoStats GW.ws_bNoStats // -NS = no output of stats at end
 #define g_bNoFile  GW.ws_bNoFile  // -NF = no output of file name
+
+#define	gfQuiet		   W.ws_fQuiet
+
 
 #endif	/* _Fa4Work_H */
 // eof - Fa4Work.h

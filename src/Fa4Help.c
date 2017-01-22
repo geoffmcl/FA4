@@ -2438,6 +2438,12 @@ int	ProcessArgs( LPWORKSTR pWS, int argc, char **argp, uint32_t level )
 					gfParity = TRUE;
 					break;
 
+				case 'Q': // FIX20160702 - Add a -Q - Quiet - only output is the find lines
+					gfQuiet = TRUE;
+                    g_bNoStats = TRUE;
+                    g_bNoFile = TRUE;
+					break;
+
 #ifdef	ADDRECUR
 				case 'R':
 					gfRecursive = TRUE;
