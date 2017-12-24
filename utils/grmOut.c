@@ -83,7 +83,7 @@ void	oi( char * lps )    // do output - hOut(stdout), hUserOut if valid, WriteDi
 
    i = 0;
 	if( lps )
-      i = strlen( lps );
+      i = (int)strlen( lps );
    if(i)
 	{
 #ifdef WIN32
@@ -137,7 +137,7 @@ void	prt( char * lps )
 	int		i, j, k;
 	char	c, d;
 
-   i = strlen(lps);
+   i = (int)strlen(lps);
 	if(i)
 	{
 		k = 0;
@@ -203,7 +203,7 @@ void	dout( char * lps )
 	int		i, j, k;
 	char	c, d;
 
-	i = strlen( lps );
+	i = (int)strlen( lps );
 	if(i)
 	{
 		k = 0;
@@ -286,7 +286,7 @@ void	PutThous( char * lpb,
 	sprintf( &szform[0], "%%%uu", i );	// Get a format string
 	sprintf( &sztmp[0], &szform[0], size );	// and initial string
 
-	i = strlen( &sztmp[0] ); 
+	i = (int)strlen( &sztmp[0] ); 
 	if(i)
 	{
 		strcpy( lpb, &sztmp[0] );	// Just COPY first
@@ -323,7 +323,7 @@ char *	ShortName( char * lps, char * lpd, int siz )
 
 	k = 0;
 	if( (siz > 10) &&
-		((i = strlen( lps )) > (siz+3) ) )
+		((i = (int)strlen( lps )) > (siz+3) ) )
 	{
 		i2 = (siz-1) / 2;
 		i3 = i2 + (i - (i2 * 2));

@@ -84,8 +84,11 @@ extern	char *	GetDT4( int Typ );
 #endif // USE_DT4_MODULE
 
 char	szDTxt[MAX_PATH+4] = { "TEMPDIAG.TXT" };
+#ifdef USE_WIN32_API
 static HFILE	hDFile = 0;
-
+#else
+static FILE	*hDFile = 0;
+#endif
 #endif	/* !GMALTOUT */
 
 
@@ -138,7 +141,7 @@ int	SetFileType( char * lpInFil, uint32_t *pType )
 	// if there is ONE!!!
 	i = k = 0;
    if(lpInFil)
-      i = strlen(lpInFil);
+      i = (int)strlen(lpInFil);
 	if( i )
 	{
 		// Back up to the FULL STOP
@@ -198,7 +201,7 @@ int	SplitFN( char * lpdir, char * lpfil, char * lpext )
 	char	c;
 
 	k = 0;		// Start NO DIRECTORY
-	i = strlen( lpext ); 
+	i = (int)strlen( lpext ); 
 	if(i)
 	{
 		if( lpdir )
@@ -252,7 +255,7 @@ int	SplitExt( char * lpb, char * lpe, char * lpf )
 
 	i = j = k = l = 0;
     if(lpf) {
-        i = strlen(lpf);
+        i = (int)strlen(lpf);
     }
 	if(i) {
       // FIX20041205 - this appear WRONG with *.htm* par example
@@ -303,8 +306,8 @@ int	WildComp2( char * lp1, char * lp2 )
 	int      c, d;
 
 	flg = FALSE;
-	i1 = strlen(lp1);
-	i2 = strlen(lp2);
+	i1 = (int)strlen(lp1);
+	i2 = (int)strlen(lp2);
 	if( i1 && i2 )    // if BOTH have lengths
 	{
       ilen = i1;
@@ -504,7 +507,7 @@ int	GotWild( char * lps )
 	int	flg = FALSE;
 	int		i, j;
 	char	c;
-	i = strlen( lps ); 
+	i = (int)strlen( lps ); 
 	if(i)
 	{
 		for( j = 0; j < i; j++ )
@@ -548,7 +551,7 @@ int	HasDot( char * lps )
 {
    char * p = strchr(lps,'.');
    if(p)
-      return( (p - lps) + 1 );
+      return(int)( (p - lps) + 1 );
    return 0;
 }
 
@@ -557,7 +560,7 @@ int	HasDot( char * lps )
 int	IsDot( char * lps )
 {
 	int	flg = FALSE;
-	int		i = strlen( lps ); 
+	int		i = (int)strlen( lps ); 
 	if(i)
 	{
 		if( ( i == 1 ) &&
@@ -572,7 +575,7 @@ int	IsDot( char * lps )
 int	IsDDot( char * lps )
 {
 	int	flg = FALSE;
-	int		i = strlen( lps ); 
+	int		i = (int)strlen( lps ); 
 	if(i)
 	{
 		if( ( i == 2 ) &&
@@ -629,8 +632,11 @@ void	CloseUserFile( HANDLE hf )
     }
 }
 
+#ifdef USE_WIN32_API
 #define		VLD		( hDFile && ( hDFile != HFILE_ERROR ) )
-
+#else
+#define		VLD		( hDFile && ( hDFile != (FILE *)HFILE_ERROR ) )
+#endif
 int CreateDiagFile( void )
 {
     int iret = 0;   // set FAILED
@@ -640,9 +646,9 @@ int CreateDiagFile( void )
 #else
     FILE *fp = fopen( szDTxt, "w" );
     if (fp) {
-        hDFile = (HFILE)fp;
+        hDFile = fp;
     } else {
-        hDFile = (HFILE)INVALID_HANDLE_VALUE;
+        hDFile = (FILE *)HFILE_ERROR;   // INVALID_HANDLE_VALUE;
     }
 #endif
     if (!VLD) {
@@ -677,7 +683,7 @@ void	WriteDiagFile( char * lps )
 	// if given a pointer, and there is data
    i = 0;
    if(lps)
-      i = strlen(lps);
+      i = (int)strlen(lps);
 	if(i)
 	{
 		if( ( hDFile == 0 ) &&
@@ -691,12 +697,12 @@ void	WriteDiagFile( char * lps )
 #if (defined(WIN32) && defined(USE_WIN32_API))
 			wtn = _lwrite( hDFile, lps, i );
 #else
-            wtn = fwrite(lps,1,i,(FILE *)hDFile);
+            wtn = (int)fwrite(lps,1,i,(FILE *)hDFile);
 #endif
 			if( wtn != i )
 			{
 				CloseDiagFile();
-				hDFile = HFILE_ERROR;
+				hDFile = (FILE *)HFILE_ERROR;
                 fprintf(stderr,"Warning: write diag file '%s' FAILED! req %d, got %d. CLOSED\n", szDTxt, i, wtn);
 
 			}
@@ -745,12 +751,12 @@ void	DisableDiagFile( void )
 	{
 		CloseDiagFile();
 	}
-	hDFile = HFILE_ERROR;
+	hDFile = (FILE *)HFILE_ERROR;
 }
 
 void	EnableDiagFile( void )
 {
-	if( hDFile == HFILE_ERROR )
+	if( hDFile == (FILE *)HFILE_ERROR )
 		hDFile = 0;
 }
 
@@ -769,7 +775,7 @@ void Buffer2Lps2( char * lps, char * lpb, int decimal,
 	int		i, j, k, l, m, sig, cad;
 	char	c;
 	strcpy( lps, "0.0" );	// fill in something
-	j = strlen( lpb );
+	j = (int)strlen( lpb );
 	k = 0;
 	cad = 0;	// Count AFTER the decimal
 	lps[k++] = '[';
@@ -1206,7 +1212,7 @@ void Buffer2Stg( char * lps, char * lpb, int decimal,
 
 	k = 0;					// Start at output beginning
 	cad = 0;				// Count AFTER the decimal
-	j = strlen( lpb );		// Get LENGTH of buffer digits
+	j = (int)strlen( lpb );		// Get LENGTH of buffer digits
 
 	if( sign )				// if the SIGN flag is ON
 		lps[k++] = '-';		// Fill in the negative
@@ -1397,7 +1403,7 @@ void	RTrimDecimal1( char * lpr )
    i = k = j = 0;
    if(lpr)
    {
-      i = strlen(lpr);
+      i = (int)strlen(lpr);
       if(i)
       {
          k = GMInStr(lpr, ".");
@@ -1729,7 +1735,7 @@ uint32_t	Dbl2TStg( char * lps, double ds )
 			Dbl2Stg( lps, dres, 4 );
 			strcat( lps, "GB" );
 		}
-		dws = strlen(lps);
+		dws = (uint32_t)strlen(lps);
 	}
 	return dws;
 }
@@ -1769,7 +1775,7 @@ char *	Float2Str( float fNum )
 	{
 		cp2++;
 	}
-	i = strlen(cp2); 
+	i = (int)strlen(cp2); 
 	if(i)
 	{
 		while( ( i ) &&
