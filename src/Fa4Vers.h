@@ -1,7 +1,7 @@
 /*\
  * Fa4Vers.h
  *
- * Copyright (c) 1987 - 2014 - Geoff R. McLane
+ * Copyright (c) 1987 - 2017 - Geoff R. McLane
  *
  * Licence: GNU GPL version 2
  * See LICENSE.txt in the source
@@ -14,9 +14,13 @@
 #define	_Fa4Vers_H
 // current version
 
+// FIX20171224 - Some 64-bit build fixes, including using 'FILE *' in place of HFILE (int)
+#define  PVERS    "V4.1.7"
+#define  PDATE    "2017 Dec 24"
+
 // FIX20160702 - Add a -Q - Quiet - only output is the find lines
-#define  PVERS    "V4.1.6"
-#define  PDATE    "2016 Jul 02"
+// PVERS    "V4.1.6"
+// PDATE    "2016 Jul 02"
 
 // FIX20150627 - Case "*.bak" and "file.txt.bak" FAILED to compare - now FIXED
 // PVERS    "V4.1.5"
