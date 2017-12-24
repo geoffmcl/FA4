@@ -1,5 +1,6 @@
 *.vcxproj
 *.filters
+*.user
 CMakeCache.txt
 CMakeFiles/*
 Debug/*
@@ -11,3 +12,4 @@ cmake_install.cmake
 x64/*
 .vs/*
 *.db
+install_manifest.txt
