@@ -387,8 +387,8 @@ uint32_t	WriteAFile( HANDLE hf, char * lpb, uint32_t len )
 int  MatchXHibit( char * lpf1, char * lpf2 )
 {
    int  flg = FALSE;   // NOT match
-   uint32_t dw1 = strlen(lpf1);
-   uint32_t dw2 = strlen(lpf2);
+   uint32_t dw1 = (uint32_t)strlen(lpf1);
+   uint32_t dw2 = (uint32_t)strlen(lpf2);
    if( dw1 == dw2 )
    {
       unsigned char *pb1, *pb2;
@@ -559,7 +559,7 @@ void boi( char * lps )
 	int		i;
 
 	if( ( lps              ) &&
-		( ( i = strlen(lps) ) > 0 ) )
+		( ( i = (int)strlen(lps) ) > 0 ) )
 	{
 		if( i < MXIOB )
 		{
@@ -879,7 +879,7 @@ int	AddSizeDate( char * lpb,		// Destination buffer
 
 	AddDateTime( lpb, pfd, FALSE );	// Add File Date and Time
 
-	return( strlen( lpb ) );
+	return( (int)strlen( lpb ) );
 }
 
 void	CopyFNA( LPWIN32_FIND_DATA lpFD )
@@ -893,7 +893,7 @@ void	CopyFNA( LPWIN32_FIND_DATA lpFD )
 	{
 		lps = &lpFD->cFileName[0];
 		lpd = &lpFD->cAlternateFileName[0];
-		i = strlen( lps ); 
+		i = (int)strlen( lps ); 
 		if(i)
 		{
 			if( i > (8+1+3) )
@@ -952,7 +952,7 @@ void	FixAlternate( WS, LPWIN32_FIND_DATA lpFD )
 	int		i;
 	if( lpFD->cAlternateFileName[0] == 0 )
 	{
-		i = strlen( &lpFD->cFileName[0] ); 
+		i = (int)strlen( &lpFD->cFileName[0] ); 
 		if(i)
 		{
 			CopyFNA( lpFD );
@@ -1435,7 +1435,7 @@ int	FixDir( WS,
 	char	   c = 0;
 
 	strcpy( lpd, lps );	// Just COPY IT first
-	i = strlen( lpd ); 
+	i = (int)strlen( lpd ); 
 	if(i)
 	{
 		lpt = &buf[0];
@@ -1457,11 +1457,11 @@ int	FixDir( WS,
 			lpt[k] = 0;
 			if( GotWild( lpt ) )
 			{
-				len = strlen( lpd );
+				len = (int)strlen( lpd );
 			}
 			else if( IsDot( lpt ) )
 			{
-				i = strlen( lpd ) - 1;
+				i = (int)strlen( lpd ) - 1;
 				lpd[i] = 0;	// Kill DOT
 				strcat( lpd, "*.*" );
 			}
@@ -1471,7 +1471,7 @@ int	FixDir( WS,
 			}
 			else if( HasDot( lpt ) )
 			{
-				len = strlen( lpd );
+				len = (int)strlen( lpd );
 			}
 			else	// Assume it ENDS WITH A DIRECTORY
 			{
@@ -1494,7 +1494,7 @@ int	FixDir( WS,
 	{
 		strcpy( lpd, "*.*" );
 	}
-	len = strlen( lpd );
+	len = (int)strlen( lpd );
    UNREFERENCED_PARAMETER(pWS);
 
 	return len;
@@ -1582,7 +1582,7 @@ int	GetDir( WS,
 			pDir );
 		prt( lpVerb );
 	}
-	StoreDir( pWS, pDir, strlen( pDir ), lptf, pTmp, pCnt );
+	StoreDir( pWS, pDir, (uint32_t)strlen( pDir ), lptf, pTmp, pCnt );
 	dwTot = 0;
 	fCnt = 0;
 	hFind = FindFirstFile( pDir, &fd );
@@ -1866,7 +1866,7 @@ LPWORKSTR	DoSetup( void )
 char *   IsValidEntries( char * lpv )
 {
    char *   lpr = 0;
-   uint32_t    i = strlen(lpv);
+   uint32_t    i = (uint32_t)strlen(lpv);
    uint32_t    j, k;
    PCVSLN   pcvs = &g_sCvsLn;
 
@@ -2226,7 +2226,7 @@ void OutSortedLines( void )
 char * get_clean_number(PSTR ps)
 {
    char * pb = GetNxtBuf();
-   int len = strlen(ps);
+   int len = (int)strlen(ps);
    int   i, c, out;
    out = 0;
    for(i = 0; i < len; i++) {
@@ -2266,10 +2266,10 @@ void Add2SortedList( WS, char * lpv2, char * lpv, int Type )
    if( (gbOrdList == od_dateup) || (gbOrdList == od_datedown) || VERB4 ) {
       // ORDER BY DATE
       if( Type == 0 ) {
-         off = strlen( lpv2 );
+         off = (uint32_t)strlen( lpv2 );
          ft = AddFileDateTime( lpv2, lpv, ds_american );
       } else {
-         off = strlen(psLP->fullname);
+         off = (uint32_t)strlen(psLP->fullname);
          ft = AddFileDateTime( psLP->fullname, lpv, ds_american );
       }
       psl = (PSORTEDLINE)MALLOC( LPTR, sizeof(SORTEDLINE) + strlen(lpv2));
@@ -2307,9 +2307,9 @@ void Add2SortedList( WS, char * lpv2, char * lpv, int Type )
       }
    } else {
       // ORDER BY SIZE
-      off = strlen(lpv2);
+      off = (uint32_t)strlen(lpv2);
       fs = atol(get_clean_number(psLP->psize));
-      sprintf(EndBuf(lpv2), " %d", fs);
+      sprintf(EndBuf(lpv2), " %d", (int)fs);
       psl = (PSORTEDLINE)MALLOC( LPTR, sizeof(SORTEDLINE) + strlen(lpv2));
       CHKMEM(psl);
       psl->f.fs = fs;
@@ -2392,7 +2392,7 @@ void	OutALine( WS, char * lpv, uint32_t *pln, int bflg, uint32_t dwoff )
          if( !pn )
          {
 			   sprintf( glpError,
-               "CRITICAL ERROR: Get memory FAILED on %d bytes!"MEOR, sizeof(CVSLN) );
+               "CRITICAL ERROR: Get memory FAILED on %d bytes!"MEOR, (int)sizeof(CVSLN) );
             prt(glpError);
             exit(0);
          }
@@ -2478,7 +2478,7 @@ void	OutALine( WS, char * lpv, uint32_t *pln, int bflg, uint32_t dwoff )
          // if( gbDirList ) { // we have -DL - wants file list only
          if( getoffs ) { // we have -DL (file list) or -DO (order list)
             char * ps = lpv; // get the line
-            ilen = strlen(ps);
+            ilen = (int)strlen(ps);
             pb = ps; // check, is it a date
             psLP->pdate = pb;
             while( *ps && (*ps > ' ') ) ps++; // get past the DATE
@@ -2815,7 +2815,7 @@ void  DoOutDOSName( WS )
 //#ifdef	FIX20000919    // -8 fix to show full path if the same as previous
 // do NOT kill this here !!!
 //   gszDOSPth[0] = 0; // restart the buffer
-   k = strlen(gszFULPth);
+   k = (int)strlen(gszFULPth);
    if( ( k ) &&
       ( strcmpi( gszDOSLast, gszFULPth ) ) )
    {
@@ -2923,7 +2923,7 @@ void  Add2FFList( WS )
    char *   lpf;
    uint32_t    dwl;
 
-   dwl = strlen( glpActive );
+   dwl = (uint32_t)strlen( glpActive );
    pn  = (PLE)MALLOC( LPTR, (sizeof(LIST_ENTRY) + dwl + 1) );
    if(!pn)
    {
@@ -3182,7 +3182,7 @@ uint32_t ChkMake2( WS, char * lpv, uint32_t dwk, uint32_t dwo )
       return 0;   // was an ALL blank line - forget it
 
    d = 0;            // initialise previous
-   dwl = strlen(p);  // get the length remaining in verbal buffer
+   dwl = (uint32_t)strlen(p);  // get the length remaining in verbal buffer
    while( dwl >= 4 ) // minimum is $(I)
    {
       if( ( c == '$' ) &&
@@ -3263,8 +3263,8 @@ uint32_t ChkMake2( WS, char * lpv, uint32_t dwk, uint32_t dwo )
    }
    if( lpml )
    {
-      dwl = strlen(lpml);  // get the length of the ADDITION
-      dwi = strlen(lpv);
+      dwl = (uint32_t)strlen(lpml);  // get the length of the ADDITION
+      dwi = (uint32_t)strlen(lpv);
       if( lpv[dwi-1] >= ' ' )
          strcat(lpv, "=="MEOR);
       lpm = lpml;
@@ -3291,7 +3291,7 @@ uint32_t ChkMake2( WS, char * lpv, uint32_t dwk, uint32_t dwo )
       }
 
       strcat(lpv,lpm);
-      dwr = strlen(lpv);   // update the OUTPUT length
+      dwr = (uint32_t)strlen(lpv);   // update the OUTPUT length
       MFREE(lpml);
    }
 
@@ -3319,7 +3319,7 @@ void	Move2Find( char * lpd, char * pFind )
 	}
 	else	// Convert to UPPER CASE
 	{
-		i = strlen( pFind );
+		i = (uint32_t)strlen( pFind );
 
 		for( j = 0; j < i; j++ )
 			lpd[j] = (char)toupper( pFind[j] );
@@ -3345,8 +3345,8 @@ int KindofCompare( char * lpex, char * lpfn )
     } else {
         int ii, jj;
         int c, d;
-        int i = strlen( lpex );
-        int j = strlen( lpfn );
+        int i = (int)strlen( lpex );
+        int j = (int)strlen( lpfn );
         if( i && j ) {
             ii = jj = 0;
             while( i && j ) {
@@ -4508,7 +4508,7 @@ void	Process_Finds( WS )
    {
       PMFILE    pf = (PMFILE)pn;
       lpf = pf->cFile;
-      len = strlen(lpf);
+      len = (int)strlen(lpf);
       gfDoneFile = FALSE;		// reset DONE FILE name
       Process_Wilds( pWS, lpf ); // FIX20140830: was to DoThisFile( pWS, lpf, FALSE ); now abandonned
    }
@@ -4558,15 +4558,15 @@ void	AddISw( WS )
 	{
 		lpmf = glpInhib;
 		j = 0;
-		while( ( i = strlen(lpmf) ) > 0 )
+		while( ( i = (int)strlen(lpmf) ) > 0 )
 		{
 			j++;
 			lpmf += ( i + 1 );
 		}
 		lpmf = glpInhib;
 		sprintf( EndBuf(lpVerb), " Inhib=ON %d", j );
-		i = strlen(lpVerb);
-      j = strlen(lpmf);
+		i = (int)strlen(lpVerb);
+        j = (int)strlen(lpmf);
 		if(( i            ) &&
 			( j            ) &&
 			( (i+j+2) < 80 ) )
@@ -4599,7 +4599,7 @@ void  OutFinds( WS )
       // FIX20010703 - change to double linked list
       ListCount2(ph, &dwk);
       sprintf( lpVerb, "Finding: %d ", dwk );
-      dwj = strlen(lpVerb);
+      dwj = (uint32_t)strlen(lpVerb);
       Traverse_List( ph, pn )
       {
          //lpf = (char *)pn;
@@ -4607,7 +4607,7 @@ void  OutFinds( WS )
          pl = (PFLINE)pn;
          lpf = &pl->cLine[0];
 
-         dwi = strlen(lpf); 
+         dwi = (uint32_t)strlen(lpf);
          if(dwi)
          {
 #ifdef   ADD_REGEX
@@ -4626,7 +4626,7 @@ void  OutFinds( WS )
          {
             strcat( lpVerb, "[<Null>]! " );
          }
-         dwj = strlen(lpVerb);
+         dwj = (uint32_t)strlen(lpVerb);
          if( dwj > 65 )
          {
             prt( lpVerb );
@@ -4985,7 +4985,7 @@ void	Error_Exit( WS, int val )
 	int		i = 0;
    PrtErr( pWS, val );
    if( pWS )
-      i = strlen( glpError );
+      i = (int)strlen( glpError );
    if(i)
 	{
 		prt( glpError );
@@ -5373,7 +5373,7 @@ int	IsString( char * lpv, int ins, char * lpc, int len )
 			while( ( *lps <= ' ' ) && ( *lps != 0 ) )
 				lps++;
 
-			i = strlen(lps); 
+			i = (int)strlen(lps); 
 			if( ( i ) &&
 				( i > j ) )
 				flg = TRUE;
@@ -5414,7 +5414,7 @@ int	IsEVLabel( char * lpv )
 
 	lps = lpv;
    if(lps)
-      i = strlen(lps);
+      i = (int)strlen(lps);
 	if( ( i ) &&
 		( i > j ) )
 	{
@@ -5425,7 +5425,7 @@ int	IsEVLabel( char * lpv )
 			while( ( *lps <= ' ' ) && ( *lps != 0 ) )
 				lps++;
 
-			i = strlen(lps);
+			i = (int)strlen(lps);
 			if( ( i ) &&
 				( i > j ) )
 				flg = TRUE;
@@ -5457,7 +5457,7 @@ int	IsFVLabel( char * lpv )
 
    lps = lpv;
    if(lps)
-      i = strlen(lps);
+      i = (int)strlen(lps);
 
 	if( ( i ) &&
 		( i > j ) )
@@ -5469,7 +5469,7 @@ int	IsFVLabel( char * lpv )
 			while( ( *lps <= ' ' ) && ( *lps != 0 ) )
 				lps++;
 
-			i = strlen(lps);
+			i = (int)strlen(lps);
 			if( ( i ) &&
 				( i > j ) )
 				flg = TRUE;
@@ -5501,7 +5501,7 @@ int	IsEDirect( char * lpv )
 
 	lps = lpv;
    if(lps)
-      i = strlen(lps);
+      i = (int)strlen(lps);
 	if( ( i ) &&
 		( i > j ) )
 	{
@@ -5512,7 +5512,7 @@ int	IsEDirect( char * lpv )
 			while( ( *lps <= ' ' ) && ( *lps != 0 ) )
 				lps++;
 
-			i = strlen(lps);
+			i = (int)strlen(lps);
 			if( ( i ) &&
 				( i > j ) )
 				flg = TRUE;
@@ -5541,7 +5541,7 @@ int	IsFDirect( char * lpv )
 	char *	lps = lpv;
 
    if(lps)
-      i = strlen(lps);
+      i = (int)strlen(lps);
    if( ( i ) &&
 		( i > j ) )
 	{
@@ -5552,7 +5552,7 @@ int	IsFDirect( char * lpv )
 			while( ( *lps <= ' ' ) && ( *lps != 0 ) )
 				lps++;
 
-			i = strlen(lps);
+			i = (int)strlen(lps);
 			if( ( i ) &&
 				( i > j ) )
 				flg = TRUE;
@@ -5775,16 +5775,16 @@ int	HasStg( WS, char * pn, char * ps )
 			if( gbCaseInhib )
 			{
 //				m = mstrncmp( pn, ps, k );
-				m = mstrncmp2( pWS, pn, ps, k );
+				m = mstrncmp2( pWS, pn, ps, (int)k );
 			}
 			else
 			{
 //				m = mstrncmpi( pn, ps, k );
-				m = mstrncmpi2( pWS, pn, ps, k );
+				m = mstrncmpi2( pWS, pn, ps, (int)k );
 			}
 			if( m == 0 )
 			{
-				i = l + 1;
+				i = (int)(l + 1);
 				break;
 			}
 			pn++;

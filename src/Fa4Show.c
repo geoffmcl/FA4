@@ -209,7 +209,7 @@ void	ShowLine( WS,
 //	    gdwLineLen = GettheLine( pWS, dwoff, dwmax, pdw, pln, MXLINEBUF ); 
 //#endif // #ifdef USE_ALLOCATED_LINE_BUFFER y/n
 		if(gdwLineLen) {
-			while( ( dwo = strlen(lpmf) ) > 0 ) {
+			while( ( dwo = (uint32_t)strlen(lpmf) ) > 0 ) {
 				if( HasStg( pWS, glpLineBuf, lpmf ) ) {
 					if( VERB6 ) {
 						sprintf( lpVerb,

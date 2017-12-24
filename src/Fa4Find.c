@@ -264,7 +264,7 @@ void	DoLineChk( WS, char * lpb, uint32_t dwLnBgn, uint32_t dwi )
 						   break;
 				   }
 				   gcDirBuf[j] = 0;
-				   i = strlen( &gcDirBuf[0] ); 
+				   i = (int)strlen( &gcDirBuf[0] ); 
 				   if(i)
 				   {
 					   if( gcDirBuf[i-1] != PATH_CHAR )
@@ -402,12 +402,12 @@ uint32_t Process_Line_For_Finds( WS, uint32_t bgn, uint32_t end )
         pl = (PFLINE)pn;
         g_psActFind = pl; // set current active FIND structure
         pFind = &pl->cLine[0];
-        flen = strlen(pFind);
+        flen = (uint32_t)strlen(pFind);
 		Move2Find( lpd, pFind );
 		g_lpCurrFind = pFind;   // original string
 		g_dwCurrFLen = flen;    // length of FIND string
 		g_lpCurFind  = lpd;     // copy of FIND string (with CASE fixed)
-		g_dwCurFLen  = strlen( lpd );
+		g_dwCurFLen  = (uint32_t)strlen( lpd );
 #ifdef   ADD_REGEX
         if( pl->isregex ) {
             if( !pl->pre ) {
@@ -761,12 +761,12 @@ void	Find_In_Gen( WS, char * lpInF )
       pl = (PFLINE)pn;
       g_psActFind = pl; // set current active FIND structure
       pFind = &pl->cLine[0];
-      flen = strlen(pFind);
+      flen = (uint32_t)strlen(pFind);
 		Move2Find( lpd, pFind );
 		W.ws_lpCurrFind = pFind;   // original string
 		W.ws_dwCurrFLen = flen;    // length of FIND string
 		W.ws_lpCurFind  = lpd;     // copy of FIND string (with CASE fixed)
-		g_dwCurFLen  = strlen( lpd );
+		g_dwCurFLen  = (uint32_t)strlen( lpd );
 #ifdef   ADD_REGEX
       if( pl->isregex ) {
          if( !pl->pre ) {

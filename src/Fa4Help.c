@@ -231,7 +231,7 @@ void  Add2CmdBuf( WS, char * cp, int j )
             strcat( &gszCmdBuf[0], " " );
       }
 		strcat( &gszCmdBuf[0], cp );
-		gdwCmdLen = strlen( &gszCmdBuf[0] );
+		gdwCmdLen = (uint32_t)strlen( &gszCmdBuf[0] );
       gdwCmdLn += j;
 	}
 	else
@@ -239,7 +239,7 @@ void  Add2CmdBuf( WS, char * cp, int j )
       if( ( gdwCmdLen + 4 ) < MXCMDBUF )
 	   {
 		   strcat( &gszCmdBuf[0], "+++" );
-		   gdwCmdLen = strlen( &gszCmdBuf[0] );
+		   gdwCmdLen = (uint32_t)strlen( &gszCmdBuf[0] );
 	   }
       gdwCmdLen = MXCMDBUF;
    }
@@ -356,7 +356,7 @@ void	GetErrNum( WS, char * lpIn )
    j = 0;
    cp = lpIn;
    if(cp)
-      j = strlen(cp);
+      j = (int)strlen(cp);
    if(j)
 	{
 		lg = 0;
@@ -482,20 +482,20 @@ int  Add2Finds( WS, char * lps, int bFSwitch )
       // 20070306 - fix of copy to FIND list -
       // do NOT make forst letter upper case
       uc = (char)toupper(*cp);
-      ilen = strlen(cp);
+      ilen = (int)strlen(cp);
       if( bFSwitch ) {
 #ifdef   ADD_REGEX
          if( uc == 'R' ) {
             cp++;
             c = *cp;
-            ilen = strlen(cp);
+            ilen = (int)strlen(cp);
             isregex = 1;
          }
 #endif   // #ifdef   ADD_REGEX
          if( c == '=' ) {
             cp++;
             c = *cp;
-            ilen = strlen(cp);
+            ilen = (int)strlen(cp);
          } else if( c == ':' ) {
             // this is a VALID option
          } else if( ( ilen >= 5 ) && ( ( c == '1' ) || ( c == '2' ) ) && ( cp[1] == ':' ) && ( cp[2] ) ) {
@@ -990,7 +990,7 @@ int	Do_I_Switch( WS, char * psw )
 	cp = psw; 
 	if(cp)
 	{
-		i = strlen(cp);
+		i = (int)strlen(cp);
 		// we have a pointer and length
 		if( i < (MXSTKBUF - 1) )
 		{
@@ -1053,7 +1053,7 @@ int	Do_I_Switch( WS, char * psw )
 				{
 					// not an input file
 					int		i;
-					i = strlen( cp ); 
+					i = (int)strlen( cp ); 
 					if(i)
 					{
 						if( glpInhib == 0 )
@@ -1084,7 +1084,7 @@ int	Do_I_Switch( WS, char * psw )
 								giInhibSiz += (i + 16);
 								lpbgn = lpnew;
 								k = 0;
-								while( ( j = strlen(lpold) ) > 0 )
+								while( ( j = (int)strlen(lpold) ) > 0 )
 								{
 									strcpy(lpnew, lpold);
 									lpold += (j + 1);
@@ -1346,14 +1346,14 @@ int	MoveFileName( WS, char * lpdest, char * lpsrc )
 	j = k = 0;
 	lps = lpsrc;
    if(lps)
-      j = strlen(lps);
+      j = (int)strlen(lps);
 	if( lpdest && j )
 	{
 		*lpdest = 0;
 		if( *lps == '"' )
 		{
 			lps++;
-			j = strlen(lps);
+			j = (int)strlen(lps);
 			for( i = 0; i < j; i++ )
 			{
 				c = lps[i];
@@ -1367,7 +1367,7 @@ int	MoveFileName( WS, char * lpdest, char * lpsrc )
 		{
 			strcpy( lpdest, lpsrc );
 		}
-		k = strlen(lpdest);
+		k = (int)strlen(lpdest);
 	}
    UNREFERENCED_PARAMETER(pWS);
 	return k;
@@ -1429,7 +1429,7 @@ int	LoadFile2( WS, LPLFSTR lpLF, int fExit )
 						if( VERB6 )
 							boi( "Reading..." );
 						// Read DATA into buffer
-                        *lpRD = fread( *lpBuf, 1, *lpDW, fp );
+                        *lpRD = (uint32_t)fread( *lpBuf, 1, *lpDW, fp );
                         fclose(fp);
 						if( *lpRD == *lpDW )
 						{
@@ -1560,13 +1560,13 @@ void	Add2Files( WS, char * lps ) // PLE ph = &g_sFileList, count in g_nFileCnt
       // FIX20041210 - remove any "..." from the file name
       if( *lps == '"' ) {
          strcpy(cp, &lps[1]);
-         ilen = strlen(cp); // get the count
+         ilen = (int)strlen(cp); // get the count
          if((ilen) && (cp[ilen-1] == '"')) {
             ilen--;
             cp[ilen] = 0;
          }
       }
-      ilen = strlen(cp);
+      ilen = (int)strlen(cp);
    }
 
    if(ilen) {
@@ -2015,7 +2015,7 @@ void  Do_X_Switch( WS, char * cp )
       uint32_t dwn = 0;
       PLE   ph = &g_sExclList;
       // EXCLUDE File string(s) LIST g_sExclList // list of EXCLUDED files
-		dwj = strlen( cp );
+		dwj = (uint32_t)strlen( cp );
 		for( dwi = 0; dwi < dwj; dwi++ ) {
 			c = cp[dwi];
          if( c == ';' ) { // reached end of this item
@@ -2158,7 +2158,7 @@ void  Do_D_Switch( WS, char * cp )
 
 int IsAllNum( char * str )
 {
-   uint32_t len = strlen(str);
+   uint32_t len = (uint32_t)strlen(str);
    if(len) {
       uint32_t dwi;
       for(dwi = 0; dwi < len; dwi++)
@@ -2300,7 +2300,7 @@ int	ProcessArgs( LPWORKSTR pWS, int argc, char **argp, uint32_t level )
 			c = *cp;
 			if( c == 0 )
 				continue;
-			j = strlen(cp);
+			j = (int)strlen(cp);
             nc = (j ? cp[1] : 0);
 			// Keep a COPY of the command
             Add2CmdBuf( pWS, cp, j );

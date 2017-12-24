@@ -16,7 +16,7 @@ void  add2list( PLE ph, char * lpo ) // like PLE ph = &g_sOutList;
 {
    PLE      pn;
    char *   lpf;
-   uint32_t    dwl = strlen( lpo );
+   uint32_t    dwl = (uint32_t)strlen( lpo );
 
    if( dwl == 0 )
       return; // quietly forget adding nothing!!!

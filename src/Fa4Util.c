@@ -26,7 +26,7 @@ char *   GetNxtBuf( void )
 
 uint32_t TrimIB( char * lps )
 {
-   uint32_t    dwr = strlen(lps);
+   uint32_t    dwr = (uint32_t)strlen(lps);
    char *   p   = lps;
    uint32_t    dwk = 0;
    while(dwr)
@@ -63,8 +63,8 @@ int   InStr( char * lpb, char * lps )
    int   iRet = 0;
    int   i, j, k, l, m;
    char    c;
-   i = strlen(lpb);
-   j = strlen(lps);
+   i = (int)strlen(lpb);
+   j = (int)strlen(lps);
    if( i && j && ( i >= j ) )
    {
       c = *lps;   // get the first we are looking for
@@ -103,7 +103,7 @@ char *   Mid( char * lpl, uint32_t dwb, uint32_t dwl )
 {
    char *   lps = GetNxtBuf();
 //   char *   pt;
-   uint32_t    dwk = strlen(lpl);
+   uint32_t    dwk = (uint32_t)strlen(lpl);
    uint32_t    dwi, dwr;
    *lps = 0;
    if( ( dwl ) && 
@@ -152,7 +152,7 @@ char *   Left( char * lpl, uint32_t dwi )
 char *   Right( char * lpl, uint32_t dwl )
 {
    char *   lps = GetNxtBuf();
-   uint32_t    dwk = strlen(lpl);
+   uint32_t    dwk = (uint32_t)strlen(lpl);
    uint32_t    dwi;
    *lps = 0;
    if( ( dwl ) &&
@@ -231,7 +231,7 @@ char *   pMths[] = {
 int  strbgn( char * lps, char * lpd )
 {
    int  bRet = FALSE;
-   uint32_t i = strlen(lpd);
+   uint32_t i = (uint32_t)strlen(lpd);
    if( i <= strlen(lps) )
    {
       uint32_t   j;
