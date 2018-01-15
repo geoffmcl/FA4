@@ -222,6 +222,8 @@ uint32_t dwFind1;
 uint32_t g_dwFoundInFiles = 0;   // FIX20081003 - show found in files count at end
 
 uint32_t	   dwLastLn, dwLnBgn;
+// "%4d/%02d/%02d  %02d:%02d",
+static const char *dummy_datetime = "                ";
 
 void DO_OUT( char * pb )
 {
@@ -2992,7 +2994,31 @@ void OutGFName_with_Info( WS )
    else
 #endif  // WIN32
    {
-      sprintf( lpVerb, "%s (f)"PRTTERM, glpActive );  // = W.ws_glpActive
+       // FIX20180115 - restore -v3 to show date and size of file output
+       struct tm *pt;
+       char *nb = GetNxtBuf();
+       sprintf(nb, "%llu", gActSize);
+       nb = My_NiceNumber(nb);
+       pt = gmtime((time_t *)&gActDate);
+       sprintf(lpVerb, "%s ", glpActive);  // = W.ws_glpActive
+       while (strlen(lpVerb) < MINFNSP) {
+           strcat(lpVerb, " ");
+       }
+       if (pt) {
+           sprintf(EndBuf(lpVerb),
+               "%4d/%02d/%02d  %02d:%02d:%02d",
+               pt->tm_year + 1900,  // Year (current year minus 1900).
+               pt->tm_mon + 1,      // Month (0 – 11; January = 0).
+               pt->tm_mday,         // Day of month (1 – 31).
+               pt->tm_hour,         // Hours since midnight (0 – 23).
+               pt->tm_min,          // Minutes after hour (0 – 59).
+               pt->tm_sec);         // Seconds after minute (0 – 59).
+
+       } else {
+           strcat(lpVerb, dummy_datetime);
+       }
+       sprintf(EndBuf(lpVerb), ", %s bytes", nb);
+       strcat(lpVerb, PRTTERM);
    }
 }
 
@@ -3764,17 +3790,17 @@ void  AddFInfo( WS, int bAddWarn, int bLocal )
            sprintf(EndBuf(lpVerb),
                "%4d/%02d/%02d  %02d:%02d",
                pt->tm_year + 1900,
-               pt->tm_mon,
+               pt->tm_mon  + 1,
                pt->tm_mday,
                pt->tm_hour,
-               pt->tm_sec );
+               pt->tm_min );
            if (!bLocal)
                strcat(lpVerb," UTC");
        } else if (bAddWarn) {
            if (bLocal)
-               strcat(lpVerb,"WANRING: locatime() FAILED");
+               strcat(lpVerb,"WARNING: locatime() FAILED");
            else
-               strcat(lpVerb,"WANRING: gmtime() FAILED");
+               strcat(lpVerb,"WARNING: gmtime() FAILED");
        }
    } else if (bAddWarn) {
        strcat( lpVerb, " WARNING: Unable to FIND!!!" );
@@ -5136,7 +5162,7 @@ void	PutActiveStg( WS, uint32_t dwMs )
 
 
 // "%4d/%02d/%02d  %02d:%02d",
-static const char *dummy_datetime = "                ";
+//static const char *dummy_datetime = "                ";
 ///////////////////////////////////////////////////////////////////////////////
 // FUNCTION   : OutFindList
 // Return type: void 
@@ -5221,12 +5247,13 @@ void  OutFindList( WS ) // *** DONE AT EXIT ***
                    struct tm *pt = gmtime((time_t *)&pmwl->wl_DateTime64);
                    if (pt) {
                         sprintf(EndBuf(lps),
-                            "%4d/%02d/%02d  %02d:%02d",
-                            pt->tm_year + 1900,
-                            pt->tm_mon,
-                            pt->tm_mday,
-                            pt->tm_hour,
-                            pt->tm_sec );
+                            "%4d/%02d/%02d  %02d:%02d:%02d",
+                            pt->tm_year + 1900, // Year (current year minus 1900).
+                            pt->tm_mon  + 1,    // Month (0 – 11; January = 0).
+                            pt->tm_mday,        // Day of month (1 – 31).
+                            pt->tm_hour,        // Hours since midnight (0 – 23).
+                            pt->tm_min,         // Minutes after hour (0 – 59).
+                            pt->tm_sec );       // Seconds after minute (0 – 59).
                    } else {
                        strcat(lps,dummy_datetime);
                    }

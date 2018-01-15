@@ -166,7 +166,10 @@ typedef	struct tagWORKSTR {
 	int	   ws_fReverse;
 	int	   ws_fFirst;
 	char *	ws_lpVerb;
-	char *	ws_glpActive;
+	char *	ws_glpActive;   // glpActive - active file name
+    // FIX20180115 - restore -v3 to show date and size of file output
+    uint64_t ws_gActSize;   // gActSize  - active file size
+    uint64_t ws_gActDate;   // gActDate  - active file date
 
 	char *	ws_lpForm;
 	int	   ws_fDoneFile;
@@ -532,8 +535,11 @@ extern   LPWORKSTR	lpWS;
 #define		gdwEnd		W.ws_dwEnd
 #define		FindInType	W.ws_findintype // FINDINTYPE
 #define		GetChr		W.GETCHR
-#define		glpActive	W.ws_glpActive
+#define		glpActive	W.ws_glpActive  // active file name
 #define		g_lpActive	GW.ws_glpActive
+// FIX20180115 - restore -v3 to show date and size of file output
+#define     gActSize    W.ws_gActSize   // gActSize  - active file size
+#define     gActDate    W.ws_gActDate   // gActDate  - active file date
 
 // -R - Recursive find mask
 #define		gfRecursive	W.ws_fRecursive

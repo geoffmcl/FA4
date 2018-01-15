@@ -273,6 +273,10 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
         // NOT recursive, and found just the single file
         ul1 = get_last_file_size64();
         strcpy(glpActive,lpwild);   // set as active
+        // FIX20180115 - restore -v3 to show date and size of file output
+        gActSize = ul1;             // set act SIZE
+        gActDate = get_last_file_mtime64(); // set act DATE
+
         g_dwFoundFileCnt++;
         if( VERB9 ) {
             sprintf( lpVerb, "%s: v9: Checking %s ..."PRTTERM, module, lpwild );
@@ -338,6 +342,10 @@ void Process_Wilds( WS, char *lpwild ) // FIX20140830: Slight miss naming - now 
                 if( MatchFiles2( pfn, d->d_name ) ) {
                     // defined g_dwFoundMatchCnt = (total - unmatched)
                     g_ulTotalBytes += ul1;
+                    // FIX20180115 - restore -v3 to show date and size of file output
+                    gActSize = ul1;             // set act SIZE
+                    gActDate = get_last_file_mtime64(); // set act DATE
+
                     gfDoneFile = FALSE;		// reset DONE FILE name
                     // Process a FILE, after MAPPING, for the FIND STRING(s)
 				    Find_In_File( pWS );

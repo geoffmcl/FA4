@@ -14,9 +14,13 @@
 #define	_Fa4Vers_H
 // current version
 
+// FIX20180115 - restore -v3 to show date and size of file output
+#define  PVERS    "V4.1.8"
+#define  PDATE    "2018 Jan 15"
+
 // FIX20171224 - Some 64-bit build fixes, including using 'FILE *' in place of HFILE (int)
-#define  PVERS    "V4.1.7"
-#define  PDATE    "2017 Dec 24"
+// PVERS    "V4.1.7"
+// PDATE    "2017 Dec 24"
 
 // FIX20160702 - Add a -Q - Quiet - only output is the find lines
 // PVERS    "V4.1.6"
