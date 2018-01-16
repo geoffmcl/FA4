@@ -1794,11 +1794,11 @@ int   gbOrdList = 0; // 1=order date 2=order size
 // #endif // #ifdef ADD_DIRLIST_SORT2
 
 char * pszFrontPage[] = {
-   { "_derived" },
-   { "_private" },
-   { "_vti_cnf" },
-   { "_vti_pvt" },
-   { 0 }
+   "_derived",
+   "_private",
+   "_vti_cnf",
+   "_vti_pvt",
+   0
 };
 
 void  Add_FP_Directories( void )
@@ -1813,10 +1813,11 @@ void  Add_FP_Directories( void )
 
 // FIX20071006 - add -x::: to excluded CVS and SVN directories
 char * pszCVSSVN[] = {
-   { "CVS" },
-   { ".svn" },
-   { ".git" },  // 20201007 - Added GIT
-   { 0 }
+   "CVS",
+   ".svn",
+   ".git",  // 20201007 - Added GIT
+   ".hg",   // 20180116 - Added 'hg' - Mercurial Distributed SCM
+    0 
 };
 
 

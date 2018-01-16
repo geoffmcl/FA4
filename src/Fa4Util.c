@@ -201,28 +201,28 @@ char *   Right( char * lpl, uint32_t dwl )
 // ctime( &ltime ) = Fri Apr 29 12:25:12 1994
 
 char *   pDays[] = {
-   { "Sun" },
-   { "Mon" },
-   { "Tue" },
-   { "Wed" },
-   { "Thu" },
-   { "Fri" },
-   { "Sat" }
+   "Sun",
+   "Mon",
+   "Tue",
+   "Wed",
+   "Thu",
+   "Fri",
+   "Sat"
 };
 
 char *   pMths[] = {
-   { "Jan" },
-   { "Feb" },
-   { "Mar" },
-   { "Apr" },
-   { "May" },
-   { "Jun" },
-   { "Jul" },
-   { "Aug" },
-   { "Sep" },
-   { "Oct" },
-   { "Nov" },
-   { "Dec" }
+   "Jan",
+   "Feb",
+   "Mar",
+   "Apr",
+   "May",
+   "Jun",
+   "Jul",
+   "Aug",
+   "Sep",
+   "Oct",
+   "Nov",
+   "Dec"
 };
 
 #define  EATSPACE(p)    while( *p && (*p <= ' '))p++
