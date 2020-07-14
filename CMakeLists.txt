@@ -154,7 +154,8 @@ set( ${name}_HDRS
     ${dir}/FastComp.h
     )
 if (WIN32)
-    list(APPEND ${name}_SRCS ${dir}/FA4.rc ${dir}/resource.h ${dir}/winerror.c ${dir}/WinErr.h )
+	# ${dir}/FA4.rc 
+    list(APPEND ${name}_SRCS ${dir}/resource.h ${dir}/winerror.c ${dir}/WinErr.h )
 endif ()
 add_executable( ${name} ${${name}_SRCS} ${${name}_HDRS} )
 target_link_libraries( ${name} ${add_LIBS} )

@@ -1,42 +1,37 @@
 @setlocal
-@REM 20200415 - Switch to VC 16 2019 x64
 @set TMPPRJ=FA4
 @set TMPLOG=bldlog-1.txt
 @set TMPSRC=..
-@REM set VCVERS=14
-@REM set VCVERS=16
-@REM set VCYEAR=2019
+@set VCVERS=14
 @REM ############################################
 @REM NOTE: SPECIAL INSTALL LOCATION
 @REM Adjust to suit your environment
 @REM ##########################################
 @set TMPINST=C:\MDOS
 @set TMPOPTS=-DCMAKE_INSTALL_PREFIX=%TMPINST%
-@REM Adjust to suit your environment
-@REM ##########################################
-@REM set GENERATOR=Visual Studio %VCVERS% %VCYEAR%
-@REM set VS_PATH=C:\Program Files (x86)\Microsoft Visual Studio %VCVERS%.0
-@REM set VS_PATH=C:\Program Files (x86)\Microsoft Visual Studio\%VCYEAR%\Community\VC\Auxiliary\Build
-@REM set VC_BAT=%VS_PATH%\vcvarsall.bat
-@REM if NOT EXIST "%VS_PATH%" goto NOVS
-@REM if NOT EXIST "%VC_BAT%" goto NOBAT
-@REM set BUILD_BITS=%PROCESSOR_ARCHITECTURE%
 
-@set TMPOPTS=
-@REM set TMPOPTS=%TMPOPTS% -G "%GENERATOR%"
+@set GENERATOR=Visual Studio %VCVERS% Win64
+@set VS_PATH=C:\Program Files (x86)\Microsoft Visual Studio %VCVERS%.0
+@set VC_BAT=%VS_PATH%\VC\vcvarsall.bat
+@if NOT EXIST "%VS_PATH%" goto NOVS
+@if NOT EXIST "%VC_BAT%" goto NOBAT
+@set BUILD_BITS=%PROCESSOR_ARCHITECTURE%
+
+@set TMPOPTS=%TMPOPTS% -G "%GENERATOR%"
 
 @call chkmsvc %TMPPRJ%
 
-@echo Begin build %TMPPRJ%, %DATE% %TIME%, output to %TMPLOG%
-@echo Begin build %TMPPRJ%, %DATE% %TIME%, output to %TMPLOG% > %TMPLOG%
+@echo Begin %DATE% %TIME%, output to %TMPLOG%
+@echo Begin %DATE% %TIME% > %TMPLOG%
 
-@REM echo Setting environment - CALL "%VC_BAT%" %BUILD_BITS%
-@REM call "%VC_BAT%" %BUILD_BITS%
-@REM if ERRORLEVEL 1 goto NOSETUP
+@echo Setting environment - CALL "%VC_BAT%" %BUILD_BITS%
+@echo Setting environment - CALL "%VC_BAT%" %BUILD_BITS% >> %TMPLOG%
+@call "%VC_BAT%" %BUILD_BITS% >> %TMPLOG% 2>&1
+@if ERRORLEVEL 1 goto NOSETUP
 
-@echo Doing: 'cmake -S %TMPSRC% %TMPOPTS%'
-@echo Doing: 'cmake -S %TMPSRC% %TMPOPTS%' >> %TMPLOG%
-@cmake -S %TMPSRC% %TMPOPTS% >> %TMPLOG% 2>&1
+@echo Doing: 'cmake %TMPSRC% %TMPOPTS%'
+@echo Doing: 'cmake %TMPSRC% %TMPOPTS%' >> %TMPLOG%
+@cmake %TMPSRC% %TMPOPTS% >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR1
 
 @echo Doing: 'cmake --build . --config debug'
@@ -112,17 +107,17 @@ cmake -P cmake_install.cmake
 @echo release build error
 @goto ISERR
 
-@REM :NOVS
-@REM echo Can not locate "%VS_PATH%"! *** FIX ME *** for your environment
-@REM goto ISERR
+:NOVS
+@echo Can not locate "%VS_PATH%"! *** FIX ME *** for your environment
+@goto ISERR
 
-@REM :NOBAT
-@REM echo Can not locate "%VC_BAT%"! *** FIX ME *** for your environment
-@REM goto ISERR
+:NOBAT
+@echo Can not locate "%VC_BAT%"! *** FIX ME *** for your environment
+@goto ISERR
 
-@REM :NOSETUP
-@REM echo MSVC setup FAILED!
-@REM goto ISERR
+:NOSETUP
+@echo MSVC setup FAILED!
+@goto ISERR
 
 :ISERR
 @endlocal
